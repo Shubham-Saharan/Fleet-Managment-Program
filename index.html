@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>dbeat</title>
+<style>
+/* Colour coding lives here. Add a new state = add one variable + one entry in HEALTH (script). */
+:root{
+  --bg:#eceff6; --card:#fff; --text:#14161f; --muted:#7b8091; --line:rgba(30,40,90,.09);
+  --fill:rgba(70,80,140,.085); --thumb:#fff; --glass:rgba(244,246,252,.74);
+  --accent:#3d6ae5; --accent-soft:color-mix(in srgb,var(--accent) 12%,transparent);
+  --ok:#34c759; --soon:#ff9f0a; --bad:#ff3b30; --maint:#af52de; --idle:#8e93a3; --go:#3d6ae5; --wait:#5e5ce6; --earn:#30b0c7; --empty:#a2845e; --contract:#e0508f;
+  --shadow:0 0 0 .5px rgba(30,40,90,.05),0 2px 6px rgba(30,40,90,.04),0 16px 40px rgba(30,40,90,.06);
+  --shadow-up:0 0 0 .5px rgba(0,0,0,.06),0 4px 10px rgba(0,0,0,.06),0 24px 48px rgba(0,0,0,.09);
+  --radius:24px; --ease:cubic-bezier(.2,.8,.2,1);
+  font-family:"Figtree","Noto Sans Devanagari",-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI Variable Display","Segoe UI Variable","Segoe UI",Inter,Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0b0d12;--card:#171a22;--text:#f3f4f8;--muted:#9096a8;--line:rgba(255,255,255,.1);--fill:rgba(150,160,210,.16);--thumb:#3a3f52;--glass:rgba(23,26,34,.74);
+    --accent:#7292ff;--ok:#30d158;--soon:#ff9f0a;--bad:#ff453a;--maint:#bf5af2;--go:#7292ff;--wait:#8f8cff;--earn:#40c8e0;--empty:#ac8e68;--contract:#ff6bb5;
+    --shadow:0 0 0 .5px rgba(255,255,255,.08);--shadow-up:0 0 0 .5px rgba(255,255,255,.14),0 20px 40px rgba(0,0,0,.5)}
+}
+*{box-sizing:border-box}
+html{scrollbar-width:thin}
+body{margin:0;background:var(--bg);color:var(--text);font-size:15px;line-height:1.35;letter-spacing:-.011em;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button,input,select,textarea{font:inherit;color:inherit;letter-spacing:inherit}
+button{-webkit-tap-highlight-color:transparent}
+svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.app{display:grid;grid-template-columns:216px 1fr;min-height:100vh}
+aside{position:sticky;top:0;height:100vh;padding:28px 12px;background:var(--glass);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border-right:.5px solid var(--line)}
+.brand{display:flex;gap:10px;align-items:center;font-weight:600;font-size:17px;letter-spacing:-.02em;padding:0 10px 26px}
+.logo{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff;background:linear-gradient(160deg,#8aa6ff,#3d6ae5 70%);box-shadow:0 2px 6px rgba(61,106,229,.35)}
+.logo svg{width:16px;height:16px;stroke-width:2.4}
+nav button{display:flex;gap:11px;align-items:center;width:100%;border:0;background:none;padding:9px 14px;border-radius:980px;cursor:pointer;color:var(--text);font-weight:500;font-size:14.5px;margin-bottom:2px;transition:background .2s}
+nav button svg{color:var(--accent);width:19px;height:19px}
+nav button:hover{background:var(--fill)}
+nav button.on{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-weight:600}
+main{padding:44px clamp(18px,4.5vw,64px) 90px;max-width:1280px;width:100%}
+.head{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;margin-bottom:30px}
+h1{font-size:34px;letter-spacing:-.045em;margin:0;font-weight:700;line-height:1.1}
+.sub{color:var(--muted);margin-top:6px;font-size:15px;letter-spacing:-.01em}
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:980px;padding:8px 17px;background:var(--accent);color:#fff;font-weight:500;font-size:14.5px;cursor:pointer;display:inline-flex;gap:6px;align-items:center;justify-content:center;transition:transform .2s var(--ease),filter .2s,background .2s}
+.btn svg{width:15px;height:15px;stroke-width:2.4}
+.btn:hover{filter:brightness(1.07)}
+.btn:active{transform:scale(.96)}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.btn.ghost{background:var(--accent-soft);color:var(--accent)}
+.btn.danger{background:color-mix(in srgb,var(--bad) 12%,transparent);color:var(--bad)}
+.btn.sm{padding:5px 13px;font-size:13px}
+.icon-btn{border:0;background:var(--fill);color:var(--text);width:32px;height:32px;border-radius:50%;cursor:pointer;display:grid;place-items:center;transition:transform .2s var(--ease),background .2s}
+.icon-btn:active{transform:scale(.9)}
+.icon-btn svg{width:17px;height:17px}
+.seg{display:inline-flex;background:var(--fill);border-radius:9px;padding:2px;gap:1px}
+.seg button{border:0;background:none;padding:5px 16px;border-radius:7px;cursor:pointer;font-weight:500;font-size:13.5px;color:var(--text);transition:background .25s var(--ease),box-shadow .25s}
+.seg button.on{background:var(--thumb);box-shadow:0 .5px 1px rgba(0,0,0,.12),0 2px 6px rgba(0,0,0,.1)}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow)}
+.meta{color:var(--muted);font-size:13px}
+.nick{color:var(--muted);font-weight:500}
+.legend{display:flex;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:12.5px;margin:-10px 0 20px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.vcard{padding:20px;cursor:pointer;display:flex;flex-direction:column;gap:16px;transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
+.vcard:hover{transform:translateY(-3px);box-shadow:var(--shadow-up)}
+.vcard:active{transform:scale(.985)}
+.vtop{display:flex;justify-content:space-between;gap:8px 10px;align-items:flex-start;flex-wrap:wrap}
+.vtop .pill{margin-left:auto}
+.vtop b{font-size:17px;letter-spacing:-.025em;font-weight:600}
+.vstate{display:flex;flex-direction:column;gap:2px;min-height:50px;padding:12px 14px;border-radius:14px;background:var(--fill)}
+.vstate.earn{background:color-mix(in srgb,var(--earn) 13%,transparent)}
+.vstate.empty{background:color-mix(in srgb,var(--empty) 14%,transparent)}
+.vstate.maint{background:color-mix(in srgb,var(--maint) 12%,transparent)}
+.vstate.idle{background:color-mix(in srgb,var(--ok) 9%,transparent)}
+.vstate .big{display:flex;gap:8px;align-items:center;font-weight:600;font-size:15px;letter-spacing:-.015em}
+.vstate.maint .big{color:var(--maint)}
+.vstate small{color:var(--muted);font-size:12.5px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.tag{--c:var(--idle);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 8px;border-radius:6px;background:color-mix(in srgb,var(--c) 18%,transparent);color:color-mix(in srgb,var(--c) 75%,var(--text));flex:none}
+.vstate .big{flex-wrap:wrap}
+.paprow{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 20px;flex-wrap:wrap}
+.paprow+.paprow{border-top:.5px solid var(--line)}
+.paprow .l{display:flex;flex-direction:column;gap:3px;min-width:0}
+.paprow .r{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.count{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 8px;border-radius:980px;background:var(--fill);font-size:13px;font-weight:600;vertical-align:middle;margin-left:10px;color:var(--muted);letter-spacing:0}
+.procrow{display:grid;grid-template-columns:1fr 150px;gap:12px;align-items:center;margin-bottom:8px}
+.procrow input[type=date]{margin-top:0}
+.vfoot{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.fuelwrap{display:flex;align-items:center;gap:9px;min-width:120px;flex:1;max-width:200px}
+.fuel{display:block;flex:1;height:6px;border-radius:9px;background:var(--fill);overflow:hidden}
+.fuel i{display:block;height:100%;border-radius:9px;transition:width .6s var(--ease)}
+.fuelwrap em{font-style:normal;font-size:12px;color:var(--muted);min-width:32px;text-align:right;font-variant-numeric:tabular-nums}
+.seats{display:inline-flex;gap:5px;align-items:center;color:var(--muted);font-size:13px;white-space:nowrap}.seats svg{width:15px;height:15px}
+.pill{--c:var(--idle);display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:980px;font-size:12px;font-weight:600;letter-spacing:-.005em;white-space:nowrap;background:color-mix(in srgb,var(--c) 14%,transparent);color:color-mix(in srgb,var(--c) 72%,var(--text))}
+.section{margin:30px 0 12px;font-size:13px;font-weight:600;color:var(--muted);letter-spacing:-.005em}
+main .section{font-size:22px;color:var(--text);letter-spacing:-.03em;margin:44px 0 14px;font-weight:700}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 20px;cursor:pointer;transition:background .2s}
+.row+.row{border-top:.5px solid var(--line)}
+.row:hover{background:var(--fill)}
+.row:first-child{border-radius:var(--radius) var(--radius) 0 0}.row:last-child{border-radius:0 0 var(--radius) var(--radius)}.row:only-child{border-radius:var(--radius)}
+.tl{overflow-x:auto}.tl-inner{min-width:980px;position:relative}
+.tl-row{display:grid;grid-template-columns:200px 1fr;border-top:.5px solid var(--line);min-height:72px}
+.tl-row.top{border-top:0;min-height:36px}
+.tl-who{padding:12px 18px;display:flex;flex-direction:column;gap:6px;justify-content:center}
+.tl-who b{font-size:14px;font-weight:600;display:flex;gap:8px;align-items:center;letter-spacing:-.015em}
+.tl-track{position:relative;cursor:copy;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(100%/16 - .5px),var(--line) calc(100%/16 - .5px),var(--line) calc(100%/16))}
+.tl-track.maint{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--maint) 12%,transparent) 0 10px,transparent 10px 20px);cursor:not-allowed}
+.tl-hours{display:grid;grid-template-columns:repeat(16,1fr);font-size:11px;color:var(--muted)}
+.tl-hours span{padding:11px 0 0 7px}
+.tl-now{position:absolute;top:30px;bottom:0;width:1.5px;background:var(--bad);pointer-events:none;z-index:2}
+.tl-now::before{content:"";position:absolute;top:-4px;left:-3.5px;width:9px;height:9px;border-radius:50%;background:var(--bad)}
+.blk{--c:var(--go);position:absolute;top:10px;bottom:10px;border-radius:9px;padding:6px 10px;font-size:12px;overflow:hidden;cursor:pointer;border:0;border-left:3px solid var(--c);text-align:left;background:color-mix(in srgb,var(--c) 16%,var(--card));color:color-mix(in srgb,var(--c) 78%,var(--text));transition:transform .25s var(--ease),box-shadow .25s}
+.blk:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.12)}
+.blk b{display:block;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;font-weight:600}
+.cdot{position:absolute;top:7px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--contract)}
+.blk.earn{--c:var(--earn)}.blk.empty{--c:var(--empty)}.blk.done{--c:var(--ok)}.blk.cancelled{--c:var(--idle);opacity:.6}
+.nov{padding:15px 20px;display:flex;gap:12px;justify-content:space-between;align-items:center;cursor:pointer;transition:background .2s}
+.nov+.nov{border-top:.5px solid var(--line)}
+.nov:hover{background:var(--fill)}
+.empty{color:var(--muted);text-align:center;padding:40px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.chip{border:0;background:var(--fill);padding:6px 15px;border-radius:980px;cursor:pointer;color:var(--text);font-weight:500;font-size:14px;transition:background .25s,color .25s,transform .2s var(--ease)}
+.chip:active{transform:scale(.95)}
+.chip.on{background:var(--text);color:var(--bg)}
+.avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(160deg,#b0b3bb,#7d808a);color:#fff;display:grid;place-items:center;font-weight:600;font-size:17px;flex:none}
+dialog{border:0;border-radius:28px;padding:0;width:min(580px,94vw);max-height:92vh;overflow:auto;background:var(--card);color:var(--text);box-shadow:0 0 0 .5px var(--line),0 40px 100px rgba(0,0,0,.35)}
+dialog[open]{animation:sheet .42s var(--ease)}
+dialog::backdrop{background:rgba(0,0,0,.3);backdrop-filter:blur(12px) saturate(120%);-webkit-backdrop-filter:blur(12px)}
+dialog[open]::backdrop{animation:fade .3s ease}
+.dlg{padding:30px}
+.dlg h2{margin:0 0 20px;font-size:24px;letter-spacing:-.035em;font-weight:700}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:0 12px}
+label{display:block;font-size:12.5px;color:var(--muted);font-weight:500;margin-bottom:14px}
+label[hidden]{display:none}
+input:not([type=checkbox]):not([type=range]),select,textarea{display:block;width:100%;margin-top:6px;padding:11px 14px;border-radius:12px;border:0;background:var(--fill);font-size:15.5px;color:var(--text);transition:box-shadow .2s,background .2s}
+input[type=range]{width:100%;margin-top:10px;accent-color:var(--accent)}
+input[type=checkbox]{width:19px;height:19px;accent-color:var(--accent)}
+input:focus,select:focus,textarea:focus{outline:0;box-shadow:0 0 0 3.5px color-mix(in srgb,var(--accent) 35%,transparent)}
+.check{display:flex;gap:11px;align-items:center;color:var(--text);font-size:15px;font-weight:400}
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;margin-top:14px}
+.actions .btn:not(.sm){flex:1;padding:13px 18px;font-size:15.5px;border-radius:14px}
+.warn{background:color-mix(in srgb,var(--soon) 14%,transparent);color:color-mix(in srgb,var(--soon) 60%,var(--text));border-radius:14px;padding:12px 14px;margin-bottom:16px;font-size:13.5px}
+.vpick{display:grid;gap:8px;margin-bottom:16px}
+.vopt{display:grid;gap:6px;text-align:left;border:0;background:var(--fill);border-radius:14px;padding:12px 14px;cursor:pointer;transition:box-shadow .25s,background .25s,transform .2s var(--ease)}
+.vopt:active{transform:scale(.985)}
+.vopt.sel{box-shadow:inset 0 0 0 2px var(--accent);background:var(--accent-soft)}
+.vopt .top{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+.vopt .meta{margin-left:6px;font-weight:400}
+.why{font-size:12.5px}.why.good{color:var(--ok)}.why.no{color:var(--bad)}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:10px 12px;margin:0 0 20px}.kv dt{color:var(--muted)}.kv dd{margin:0}
+.docline{display:flex;gap:9px;align-items:center}
+@keyframes sheet{from{opacity:0;transform:translateY(18px) scale(.965)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.enter>*{animation:rise .6s var(--ease) both}
+.enter>*:nth-child(2){animation-delay:.04s}.enter>*:nth-child(3){animation-delay:.08s}.enter>*:nth-child(4){animation-delay:.12s}
+.enter .grid>*{animation:rise .6s var(--ease) both}
+.enter .grid>*:nth-child(2){animation-delay:.04s}.enter .grid>*:nth-child(3){animation-delay:.08s}.enter .grid>*:nth-child(4){animation-delay:.12s}.enter .grid>*:nth-child(5){animation-delay:.16s}.enter .grid>*:nth-child(6){animation-delay:.2s}.enter .grid>*:nth-child(n+7){animation-delay:.24s}
+.hero{text-align:center;margin:4px auto 24px;max-width:680px}
+.hero h1{font-size:clamp(30px,5.4vw,46px);letter-spacing:-.045em;line-height:1.06;font-weight:700;text-wrap:balance}
+.hero .sub{margin-top:12px;font-size:16px}
+.chiprow{display:flex;gap:10px;overflow-x:auto;padding:4px 3px 10px;margin:0 -3px 8px;justify-content:safe center;align-items:center;scrollbar-width:none}
+.chiprow::-webkit-scrollbar{display:none}
+.pchip{flex:none;display:inline-flex;align-items:center;gap:8px;border:0;background:var(--card);box-shadow:var(--shadow);color:var(--text);padding:10px 18px;border-radius:980px;font-weight:600;font-size:15px;cursor:pointer;transition:transform .2s var(--ease),box-shadow .25s,color .25s}
+.pchip b{color:var(--muted);font-weight:600}
+.pchip:active{transform:scale(.96)}
+.pchip.sel{box-shadow:inset 0 0 0 2px var(--accent),var(--shadow);color:var(--accent)}
+.pchip.sel b{color:var(--accent)}
+.bar{display:flex;gap:12px;justify-content:center;align-items:center;margin:6px 0 22px;flex-wrap:wrap}
+.vstate.earn,.vstate.empty,.vstate.maint,.vstate.idle{background:none}
+.vstate{padding:0;min-height:0;gap:6px}
+.vstate .big{flex-direction:column;align-items:flex-start;gap:8px;font-size:22px;font-weight:700;letter-spacing:-.04em;line-height:1.12}
+.vstate.idle .big{color:var(--muted)}
+.vstate small{font-size:14px;line-height:1.35}
+.btns{margin-top:0}
+.btns .btn{flex:1;padding:13px 14px;font-size:15.5px;border-radius:16px}
+.btn.outline{background:transparent;color:var(--text);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn.cta{width:100%;padding:16px 18px;font-size:17px;border-radius:18px}
+.ctas{display:grid;gap:10px}
+.sheet-head{text-align:center;margin-bottom:14px}
+.sheet-head h2{margin:12px 0 6px;font-size:30px;letter-spacing:-.045em}
+.route{background:var(--fill);border-radius:20px;padding:6px 18px;margin-bottom:18px}
+.stop{display:grid;grid-template-columns:22px 1fr auto;gap:12px;align-items:center;position:relative;padding:14px 0}
+.stop:first-child::after{content:"";position:absolute;left:10px;top:36px;bottom:-12px;width:2px;background:var(--text);opacity:.85}
+.stop .mk{width:12px;height:12px;border-radius:50%;margin:0 auto;position:relative;z-index:1}
+.stop .mk.dot{background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 25%,transparent)}
+.stop .mk.pin{background:var(--text)}
+.stop b{display:block;font-size:16px;letter-spacing:-.02em}
+.stop time{color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
+.iconrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:6px;margin:4px 0 16px;border-top:.5px solid var(--line);padding-top:12px}
+.ib{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:7px;padding:10px 4px;border-radius:14px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text);transition:background .2s,transform .2s var(--ease)}
+.ib svg{width:22px;height:22px}
+.ib:hover{background:var(--fill)}
+.ib:active{transform:scale(.94)}
+.ib.red{color:var(--bad)}
+.lang{position:fixed;top:max(12px,env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));z-index:20;background:var(--glass);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);box-shadow:var(--shadow)}
+.lang button{padding:6px 14px}
+@media (prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important}}
+@media(max-width:760px){
+  .app{grid-template-columns:1fr}
+  aside{position:fixed;top:auto;bottom:0;left:0;right:0;height:auto;z-index:5;padding:0 14px calc(14px + env(safe-area-inset-bottom));border:0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none;pointer-events:none}
+  .brand{display:none}nav{display:flex;gap:10px;justify-content:center}
+  nav button{pointer-events:auto;flex:1;max-width:150px;flex-direction:row;gap:7px;font-size:14px;justify-content:center;align-items:center;margin:0;padding:11px 14px;color:var(--text);background:var(--glass);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);box-shadow:var(--shadow-up)}
+  nav button:hover{background:var(--glass)}
+  nav button.on,nav button.on:hover{background:color-mix(in srgb,var(--accent) 16%,var(--card));color:var(--accent)}
+  main{padding-top:62px;padding-bottom:110px}.g2,.g3,.procrow{grid-template-columns:1fr}
+  h1{font-size:30px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside><div class="brand"><span class="logo"><svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></span>dbeat</div><nav id="nav"></nav></aside>
+  <main id="main"></main>
+</div>
+<div class="seg lang" role="group" aria-label="Language"><button type="button" data-lang="en">English</button><button type="button" data-lang="hi">हिंदी</button></div>
+<dialog id="dlg"></dialog>
+
+<script>
+const KEY = 'dispatch.prototype.v4';
+const $ = (s, e = document) => e.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Math.random().toString(36).slice(2, 9);
+const iso = d => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDate() + n); return iso(d); };
+const daysUntil = s => Math.round((new Date(s + 'T12:00') - new Date(iso(new Date()) + 'T12:00')) / 864e5);
+const mins = t => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+const fmt = t => { const [h, m] = t.split(':').map(Number); return ((h + 11) % 12 + 1) + (m ? ':' + String(m).padStart(2, '0') : '') + (h < 12 ? ' AM' : ' PM'); };
+const nice = s => new Date(s + 'T12:00').toLocaleDateString(LOC(), { weekday: 'long', month: 'long', day: 'numeric' });
+const DAY_START = 6 * 60, DAY_SPAN = 16 * 60;
+let lang = 'en';
+try { lang = localStorage.getItem('dbeat.lang') === 'hi' ? 'hi' : 'en'; } catch {}
+const LOC = () => lang === 'hi' ? 'hi-IN' : undefined;
+
+const I = {
+  schedule: '<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M3.5 10h17M8 3.5v3M16 3.5v3"/></svg>',
+  drivers: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.9-3.7 3.7-5.5 7-5.5s6.1 1.8 7 5.5"/></svg>',
+  vehicles: '<svg viewBox="0 0 24 24"><path d="M4 16.5v-4.2l2.1-5A1.5 1.5 0 0 1 7.5 6.3h9a1.5 1.5 0 0 1 1.4 1l2.1 5v4.2z"/><path d="M4 12.5h16"/><circle cx="7.8" cy="16.5" r="1.7"/><circle cx="16.2" cy="16.5" r="1.7"/></svg>',
+  box: '<svg viewBox="0 0 24 24"><path d="m4 8 8-4 8 4v8l-8 4-8-4z"/><path d="m4 8 8 4 8-4M12 12v8"/></svg>',
+  plus: '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
+  left: '<svg viewBox="0 0 24 24"><path d="m14.5 6-6 6 6 6"/></svg>',
+  right: '<svg viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></svg>',
+  arrow: '<svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg>',
+  edit: '<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg>',
+  copy: '<svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="3"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>',
+  cancel: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m9 9 6 6M15 9l-6 6"/></svg>',
+  trash: '<svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></svg>',
+};
+
+/* ---- Colour coding: one place. Add a state here + a CSS variable above. ---- */
+const HEALTH = {
+  ok:   { label: 'Ready',          css: '--ok' },
+  soon: { label: 'Vehicle docs due soon', css: '--soon' },
+  wait: { label: 'Vehicle docs renewing', css: '--wait' },
+  bad:  { label: 'Vehicle docs not valid', css: '--bad' },
+  maint:{ label: 'Maintenance',    css: '--maint' },
+};
+const CONTRACT = { label: 'Hire contract pending', css: '--contract' };   // agreed with the hiring company, per trip
+const DRIVER_LABEL = { ok: 'Free', soon: 'Driver docs due soon', bad: 'Driver docs not valid' };
+const FUEL = [[25, '--bad'], [50, '--soon'], [101, '--ok']];   // below 25% red, below 50% amber, else green
+const DOCS = [['insurance', 'Insurance'], ['registration', 'Registration'], ['inspection', 'Inspection']];
+const ID_TYPES = ['Passport', 'National ID card', 'Residence permit', 'Other government ID'];
+const TRIP = { scheduled: 'Planned', dispatched: 'On the way', completed: 'Done', cancelled: 'Cancelled' };
+const TRIPC = { scheduled: '--go', dispatched: '--earn', completed: '--ok', cancelled: '--idle' };
+const MODE = { earn: { label: 'Earning', css: '--earn' }, empty: { label: 'Empty run', css: '--empty' } };
+const TRIPCLS = { scheduled: '', dispatched: '', completed: 'done', cancelled: 'cancelled' };
+
+function seed() {
+  const t = iso(new Date()), d = n => iso(new Date(Date.now() + n * 864e5));
+  return {
+    types: [
+      { id: 't1', name: 'Sedan', kind: 'people', seats: 4 }, { id: 't2', name: 'SUV', kind: 'people', seats: 6 },
+      { id: 't3', name: 'Van', kind: 'people', seats: 12 }, { id: 't4', name: 'Minibus', kind: 'people', seats: 20 },
+      { id: 't5', name: 'Truck', kind: 'cargo', capacity: 3000 },
+    ],
+    drivers: [
+      { id: 'd1', name: 'Maya Chen', phone: '555-0101', active: true, homeAddress: '14 Elm Street, Springfield', licenseNumber: 'MC-440291', licenseClass: 'B', licenseExpiry: d(400), idType: 'Passport', idNumber: 'P1234567', idChecked: true, idCheckedDate: d(-60) },
+      { id: 'd2', name: 'Omar Haddad', phone: '555-0102', active: true, homeAddress: '88 Cedar Ave, Springfield', licenseNumber: 'OH-118820', licenseClass: 'D', licenseExpiry: d(180), idType: 'National ID card', idNumber: 'N7788123', idChecked: true, idCheckedDate: d(-90) },
+      { id: 'd3', name: 'Lena Fischer', phone: '555-0103', active: true, homeAddress: '5 Lake Road, Springfield', licenseNumber: 'LF-902331', licenseClass: 'B', licenseExpiry: d(20), idType: 'Passport', idNumber: 'P7654321', idChecked: true, idCheckedDate: d(-30) },
+      { id: 'd4', name: 'Maya Torres', phone: '555-0104', active: true, homeAddress: '301 Pine Court, Springfield', licenseNumber: 'MT-557712', licenseClass: 'C', licenseExpiry: d(300), idType: 'National ID card', idNumber: 'N1209988', idChecked: false },
+    ],
+    vehicles: [
+      { id: 'v1', name: 'Van 01', typeId: 't3', model: 'Mercedes Sprinter', plate: 'KX-4821', seats: 12, fuel: 72, range: 700, driverId: 'd2', maintenance: false, docs: { insurance: d(200), registration: d(90), inspection: d(20) } },
+      { id: 'v2', name: 'Sedan 02', typeId: 't1', model: 'Tesla Model S', plate: 'LM-9034', seats: 4, fuel: 38, range: 500, driverId: 'd1', maintenance: false, docs: { insurance: d(120), registration: d(300), inspection: d(150) } },
+      { id: 'v3', name: 'SUV 03', typeId: 't2', model: 'Toyota Highlander', plate: 'PQ-1177', seats: 6, fuel: 55, range: 650, driverId: '', maintenance: true, docs: { insurance: d(80), registration: d(80), inspection: d(80) } },
+      { id: 'v4', name: 'Minibus 04', typeId: 't4', model: 'Ford Transit', plate: 'ZR-6620', seats: 20, fuel: 15, range: 600, driverId: 'd4', maintenance: false, docs: { insurance: d(-5), registration: d(200), inspection: d(200) }, docState: { insurance: { inProcess: true, expected: d(3), note: 'Broker has the form' } } },
+      { id: 'v5', name: 'Sedan 05', typeId: 't1', model: 'BMW 5 Series', plate: 'TT-3308', seats: 4, fuel: 90, range: 800, driverId: 'd3', maintenance: false, docs: { insurance: d(250), registration: d(250), inspection: d(250) } },
+      { id: 'v6', name: 'Truck 06', typeId: 't5', model: 'Isuzu NPR', plate: 'TR-2045', capacity: 3000, fuel: 60, range: 900, driverId: '', maintenance: false, docs: { insurance: d(150), registration: d(-2), inspection: d(150) } },
+    ],
+    appts: [
+      { id: 'a1', title: 'Airport pickup', customer: 'Northwind Co.', address: 'Airport, Terminal 2', date: t, start: '07:00', end: '08:30', kind: 'people', passengers: 2, cargoKg: 0, distance: 35, driverId: 'd1', vehicleId: 'v2', status: 'completed', notes: '' },
+      { id: 'a2', title: 'Conference shuttle', customer: 'Acme Events', address: '120 Market St', date: t, start: '10:00', end: '17:00', kind: 'people', passengers: 9, cargoKg: 0, distance: 40, driverId: 'd2', vehicleId: 'v1', status: 'dispatched', phase: 'loaded', phaseLog: [{ p: 'pickup', at: Date.now() - 110 * 60000 }, { p: 'loaded', at: Date.now() - 75 * 60000 }], notes: '' },
+      { id: 'a3', title: 'Client transfer', customer: 'Globex', address: '9 Harbor Rd', date: t, start: '14:00', end: '15:30', kind: 'people', passengers: 3, cargoKg: 0, distance: 45, driverId: 'd1', vehicleId: 'v5', status: 'scheduled', notes: '' },
+      { id: 'a4', title: 'Hotel run', customer: 'Initech', address: 'The Grand Hotel', date: t, start: '16:00', end: '17:30', kind: 'people', passengers: 4, cargoKg: 0, distance: 60, driverId: 'd3', vehicleId: 'v2', status: 'scheduled', notes: '' },
+      { id: 'a5', title: 'Evening dinner', customer: 'Umbrella Ltd', address: 'Riverside Restaurant', date: t, start: '18:30', end: '21:00', kind: 'people', passengers: 14, cargoKg: 0, distance: 30, driverId: '', vehicleId: '', status: 'scheduled', hireDocs: 'waiting', notes: '' },
+      { id: 'a6', title: 'Furniture delivery', customer: 'Hooli Offices', address: '77 Industrial Way', date: t, start: '09:00', end: '12:00', kind: 'cargo', passengers: 0, cargoKg: 1200, distance: 80, driverId: '', vehicleId: '', status: 'scheduled', hireDocs: 'received', notes: '' },
+      { id: 'a7', title: 'Reposition to airport', customer: '', address: 'Airport, Terminal 2', date: t, start: '11:00', end: '13:00', kind: 'people', passengers: 0, cargoKg: 0, distance: 25, driverId: 'd3', vehicleId: 'v5', status: 'dispatched', revenue: false, phase: 'empty', phaseLog: [{ p: 'empty', at: Date.now() - 40 * 60000 }], notes: 'No customer. Moving to the next pickup.' },
+    ].map(a => ({ revenue: true, hireDocs: 'none', phase: '', phaseLog: [], ...a })),
+  };
+}
+let db;
+try { db = JSON.parse(localStorage.getItem(KEY)) || seed(); } catch { db = seed(); }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch {} };
+let view = 'schedule', mode = 'fleet', day = iso(new Date()), typeFilter = '', ff = 'all';
+
+const driver = id => db.drivers.find(x => x.id === id);
+const vehicle = id => db.vehicles.find(x => x.id === id);
+const typeOf = id => db.types.find(x => x.id === id);
+const typeName = id => typeOf(id)?.name || 'No type';
+const kindOf = v => typeOf(v.typeId)?.kind || 'people';
+const today = () => iso(new Date());
+const nowMin = () => { const n = new Date(); return n.getHours() * 60 + n.getMinutes(); };
+const hhmm = () => { const n = new Date(); return String(n.getHours()).padStart(2, '0') + ':' + String(n.getMinutes()).padStart(2, '0'); };
+const capLabel = v => kindOf(v) === 'cargo' ? `<span class="seats">${I.box}${(+v.capacity || 0).toLocaleString()} kg</span>` : `<span class="seats">${I.drivers}${v.seats}</span>`;
+const capText = v => kindOf(v) === 'cargo' ? `${(+v.capacity || 0).toLocaleString()} kg load` : `${v.seats} seats`;
+
+/* ---- Driver nickname: first name if nobody else shares it, else last name if unique, else "First L." ---- */
+function nick(id) {
+  const d = driver(id); if (!d) return '';
+  const p = x => x.name.trim().split(/\s+/), first = x => p(x)[0].toLowerCase(), last = x => p(x).length > 1 ? p(x).at(-1).toLowerCase() : '';
+  const parts = p(d), f = parts[0], l = parts.length > 1 ? parts.at(-1) : '';
+  if (db.drivers.filter(x => first(x) === f.toLowerCase()).length === 1) return f;
+  if (l && db.drivers.filter(x => last(x) === l.toLowerCase()).length === 1) return l;
+  return l ? `${f} ${l[0]}.` : f;
+}
+const vtag = v => `${esc(v.name)}${driver(v.driverId) ? ` <span class="nick">· ${esc(nick(v.driverId))}</span>` : ''}`;
+
+/* ---- Health: vehicles (maintenance + vehicle documents) and drivers (license, ID, address) ---- */
+const level = (issues, extra) => { const has = l => issues.some(i => i.lvl === l); return extra && has(extra) ? extra : has('bad') ? 'bad' : has('soon') ? 'soon' : has('wait') ? 'wait' : 'ok'; };
+function health(v) {
+  const issues = [];
+  if (v.maintenance) issues.push({ lvl: 'maint', text: 'In maintenance' });
+  for (const [k, label] of DOCS) {
+    const d = v.docs?.[k], st = v.docState?.[k], proc = !!st?.inProcess;
+    let base = '', block = false;
+    if (!d) { base = `${label} missing`; block = true; }
+    else { const n = daysUntil(d); if (n < 0) { base = `${label} expired`; block = true; } else if (n <= 30) base = `${label} ends in ${n} days`; }
+    if (base) issues.push({ lvl: proc ? 'wait' : block ? 'bad' : 'soon', block, doc: k, base, proc, exp: st?.expected || '', text: base + (proc ? ` · renewal in progress${st?.expected ? ', expected ' + st.expected : ''}` : '') });
+  }
+  return { level: level(issues, 'maint'), issues };
+}
+function driverHealth(d) {
+  const issues = [];
+  if (!d.licenseNumber || !d.licenseExpiry) issues.push({ lvl: 'bad', text: 'License missing' });
+  else { const n = daysUntil(d.licenseExpiry); if (n < 0) issues.push({ lvl: 'bad', text: 'License expired' }); else if (n <= 30) issues.push({ lvl: 'soon', text: `License ends in ${n} days` }); }
+  if (!d.idChecked) issues.push({ lvl: 'soon', text: 'ID not checked' });
+  if (!d.homeAddress) issues.push({ lvl: 'soon', text: 'Home address missing' });
+  return { level: level(issues), issues };
+}
+const dot = lvl => `<span class="dot" style="background:var(${HEALTH[lvl].css})"></span>`;
+const healthPill = h => `<span class="pill" style="--c:var(${HEALTH[h.level].css})">${dot(h.level)}${HEALTH[h.level].label}</span>`;
+const fuelBar = p => { const c = FUEL.find(([m]) => p < m)[1]; return `<span class="fuelwrap" title="Fuel ${p}%"><span class="fuel"><i style="width:${p}%;background:var(${c})"></i></span><em>${p}%</em></span>`; };
+const maskId = s => s ? '•••• ' + String(s).slice(-4) : '—';
+
+/* ---- Trip rules ---- */
+function overlaps(a, b) { return a.date === b.date && mins(a.start) < mins(b.end) && mins(b.start) < mins(a.end); }
+const busy = (trip, key, id) => db.appts.some(o => o.id !== trip.id && o.status !== 'cancelled' && o[key] === id && overlaps(trip, o));
+function fitReasons(v, trip) {
+  const r = [], k = kindOf(v);
+  health(v).issues.filter(i => i.lvl === 'maint' || i.block).forEach(i => r.push(i.text));
+  if (trip.kind === 'cargo') {
+    if (k !== 'cargo') r.push('Carries people, not cargo');
+    else if (trip.cargoKg && v.capacity < trip.cargoKg) r.push(`Carries up to ${v.capacity} kg (need ${trip.cargoKg})`);
+  } else {
+    if (k === 'cargo') r.push('Cargo vehicle, no seats');
+    else if (trip.passengers && v.seats < trip.passengers) r.push(`Only ${v.seats} seats (need ${trip.passengers})`);
+  }
+  const reach = v.fuel / 100 * v.range;
+  if (trip.distance && reach < trip.distance) r.push(`Fuel for ~${Math.round(reach)} km (trip ${trip.distance} km)`);
+  if (busy(trip, 'vehicleId', v.id)) r.push('Already booked then');
+  return r;
+}
+function problems(trip) {
+  const out = [], d = driver(trip.driverId);
+  if (d) {
+    if (busy(trip, 'driverId', d.id)) out.push(`${d.name} is already booked then`);
+    driverHealth(d).issues.filter(i => i.lvl === 'bad').forEach(i => out.push(`${d.name}: ${i.text}`));
+  }
+  const v = vehicle(trip.vehicleId);
+  if (v) fitReasons(v, trip).forEach(x => out.push(`${v.name}: ${x}`));
+  return out;
+}
+const loadText = a => a.kind === 'cargo' ? `${(+a.cargoKg || 0).toLocaleString()} kg cargo` : `${a.passengers || '?'} people`;
+
+/* ---- Earning vs empty run (dead miles). Customer trips: heading to pickup = empty, on board = earning, returning = empty. ---- */
+const tripMode = a => a.revenue === false || a.phase !== 'loaded' ? 'empty' : 'earn';
+const tripLabel = a => a.status === 'dispatched' ? MODE[tripMode(a)].label : TRIP[a.status];
+const tripColor = a => a.status === 'dispatched' ? MODE[tripMode(a)].css : TRIPC[a.status];
+const phaseText = a => a.revenue === false ? 'Empty move, no customer' : a.phase === 'loaded' ? `${loadText(a)} on board` : a.phase === 'return' ? 'Returning empty' : 'Heading to pickup';
+const fmtDur = ms => { const m = Math.round(ms / 60000); return m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${m % 60} min`; };
+function phaseTimes(a) {
+  const log = a.phaseLog || []; if (!log.length) return null;
+  const t = { earn: 0, empty: 0 };
+  log.forEach((cur, i) => { if (cur.p === 'end') return; const next = log[i + 1], end = next ? next.at : (a.status === 'dispatched' ? Date.now() : cur.at); t[cur.p === 'loaded' ? 'earn' : 'empty'] += Math.max(0, end - cur.at); });
+  return t;
+}
+
+/* ---- To sort out: vehicle documents (about the vehicle) and hire contracts (agreed with the hiring company, per trip) ---- */
+function vehicleDocItems() {
+  const out = [];
+  for (const v of db.vehicles) for (const i of health(v).issues) {
+    if (i.doc) out.push({ v, doc: i.doc, base: i.base, state: i.proc ? 'process' : 'todo', exp: i.exp, lvl: i.lvl });
+  }
+  return out.sort((x, y) => (x.state === 'todo' ? 0 : 1) - (y.state === 'todo' ? 0 : 1));
+}
+const contractItems = () => db.appts.filter(a => a.date === day && a.hireDocs === 'waiting' && (a.status === 'scheduled' || a.status === 'dispatched'));
+function papersPanel() {
+  const docs = vehicleDocItems(), contracts = contractItems(), out = [];
+  if (docs.length) out.push(`<div class="section">Vehicle documents to sort out<span class="count">${docs.length}</span></div><div class="card">${docs.map(it => {
+    const tag = it.state === 'process' ? `<span class="pill" style="--c:var(--wait)">${dot('wait')}Renewal in progress${it.exp ? ' · expected ' + esc(it.exp) : ''}</span>` : `<span class="pill" style="--c:var(${HEALTH[it.lvl].css})">${dot(it.lvl)}Not started</span>`;
+    const act = it.state === 'process' ? `<button class="btn ghost sm" data-renew-done="${it.v.id}|${it.doc}">Mark renewed</button>` : `<button class="btn sm" data-renew-start="${it.v.id}|${it.doc}">Start renewal</button>`;
+    return `<div class="paprow"><div class="l"><b>${vtag(it.v)}</b><span class="meta">${esc(it.base)}</span></div><div class="r">${tag}${act}</div></div>`;
+  }).join('')}</div>`);
+  if (contracts.length) out.push(`<div class="section">Hire contracts to sort out<span class="count">${contracts.length}</span></div><div class="card">${contracts.map(a =>
+    `<div class="paprow"><div class="l"><b>${esc(a.title)}</b><span class="meta">Hire contract with ${esc(a.customer || 'the hiring company')} · ${fmt(a.start)}</span></div><div class="r"><span class="pill" style="--c:var(${CONTRACT.css})"><span class="dot" style="background:var(${CONTRACT.css})"></span>Being prepared</span><button class="btn ghost sm" data-hire-ok="${a.id}">Mark signed</button></div></div>`).join('')}</div>`);
+  return out.join('');
+}
+
+/* ---- Language: English / Hindi. Each phrase is matched exactly; a few patterns cover sentences that contain numbers.
+   Typed data (names, addresses, notes) is never in this list, so it stays as the user wrote it. ---- */
+const DOCW = { Insurance: 'बीमा', Registration: 'पंजीकरण', Inspection: 'निरीक्षण' };
+const HI = {
+  // navigation and screens
+  'Schedule': 'शेड्यूल', 'Drivers': 'ड्राइवर', 'Vehicles': 'वाहन', 'Fleet': 'गाड़ियाँ', 'Plan': 'योजना', 'Today': 'आज',
+  'Language': 'भाषा', 'Previous day': 'पिछला दिन', 'Next day': 'अगला दिन', 'New trip': 'नई ट्रिप', 'No vehicles on the road': 'कोई वाहन सड़क पर नहीं',
+  'All': 'सभी', 'Earning': 'कमाई', 'Empty run': 'खाली सफ़र', 'Free': 'उपलब्ध', 'Needs attention': 'ध्यान दें',
+  // vehicle and driver status
+  'Ready': 'तैयार', 'Maintenance': 'मरम्मत', 'In maintenance': 'मरम्मत में', 'Not available': 'उपलब्ध नहीं',
+  'Vehicle docs due soon': 'वाहन के कागज़ात जल्द खत्म', 'Vehicle docs not valid': 'वाहन के कागज़ात अमान्य', 'Vehicle docs renewing': 'वाहन के कागज़ात नवीनीकरण में',
+  'Driver docs due soon': 'ड्राइवर के कागज़ात जल्द खत्म', 'Driver docs not valid': 'ड्राइवर के कागज़ात अमान्य',
+  'Hire contract pending': 'किराया अनुबंध बाकी', 'Parked': 'खड़ी है', 'No more trips today': 'आज और कोई ट्रिप नहीं', 'No trips': 'कोई ट्रिप नहीं',
+  'Heading to pickup': 'पिकअप की ओर जा रही', 'Returning empty': 'खाली वापस आ रही', 'Empty move, no customer': 'खाली चलना, कोई ग्राहक नहीं',
+  'Picked up': 'पिकअप हो गया', 'Dropped off': 'ड्रॉप हो गया', 'End trip': 'ट्रिप खत्म करें', 'Start trip': 'ट्रिप शुरू करें',
+  'Planned': 'तय', 'Done': 'पूरी', 'Cancelled': 'रद्द', 'Fuel': 'ईंधन', 'Fuel now:': 'अभी ईंधन:',
+  // lists and sections
+  'Trips without a vehicle': 'बिना वाहन वाली ट्रिप', 'Choose vehicle': 'वाहन चुनें',
+  'Vehicle documents to sort out': 'वाहन के कागज़ात जिन्हें निपटाना है', 'Hire contracts to sort out': 'किराया अनुबंध जिन्हें निपटाना है',
+  'Not started': 'शुरू नहीं हुआ', 'Start renewal': 'नवीनीकरण शुरू करें', 'Mark renewed': 'नवीनीकृत करें', 'Mark signed': 'हस्ताक्षर हो गए',
+  'Renewal in progress': 'नवीनीकरण जारी', 'Being prepared': 'तैयार हो रहा है', 'Signed and ready': 'हस्ताक्षरित और तैयार', 'Not needed': 'ज़रूरी नहीं',
+  'Hire contract': 'किराया अनुबंध', 'Hire contract with the hiring company': 'किराये पर लेने वाली कंपनी के साथ अनुबंध',
+  'Click an empty spot to plan a trip for that vehicle.': 'उस वाहन के लिए ट्रिप तय करने के लिए खाली जगह पर क्लिक करें।',
+  'No vehicles match. Try another filter.': 'कोई वाहन मेल नहीं खाता। दूसरा फ़िल्टर आज़माएँ।',
+  // documents
+  'Insurance': 'बीमा', 'Registration': 'पंजीकरण', 'Inspection': 'निरीक्षण', 'Vehicle documents': 'वाहन के कागज़ात',
+  'Vehicle documents: valid until': 'वाहन के कागज़ात: कब तक मान्य', 'Valid until': 'कब तक मान्य', 'Expected by': 'कब तक अपेक्षित',
+  'Renewals in progress': 'नवीनीकरण जारी', 'New valid until': 'नई मान्यता तिथि', 'Who is handling it? (optional)': 'इसे कौन देख रहा है? (वैकल्पिक)',
+  'Tick it once you have applied for new documents, and add the date you expect them.': 'नए कागज़ात के लिए आवेदन करते ही इसे टिक करें, और जिस तारीख़ तक मिलने की उम्मीद है वह जोड़ें।',
+  // buttons and messages
+  'Save': 'सेव करें', 'Cancel': 'रद्द करें', 'Close': 'बंद करें', 'Keep it': 'रहने दें', 'Delete': 'हटाएँ', 'Edit': 'बदलें', 'Copy': 'कॉपी',
+  'Not yet': 'अभी नहीं', 'Start anyway': 'फिर भी शुरू करें', 'Check this:': 'इसे देखें:',
+  'Press Save again to continue anyway.': 'फिर भी जारी रखने के लिए दोबारा सेव दबाएँ।',
+  'End time must be after start time.': 'खत्म होने का समय, शुरू होने के समय के बाद का होना चाहिए।',
+  'Delete this trip?': 'यह ट्रिप हटाएँ?', 'Delete this driver? Their trips will have no driver.': 'यह ड्राइवर हटाएँ? उनकी ट्रिप बिना ड्राइवर की हो जाएँगी।',
+  'Delete this vehicle? Its trips will have no vehicle.': 'यह वाहन हटाएँ? इसकी ट्रिप बिना वाहन की हो जाएँगी।',
+  'The hire contract is not signed yet. Start the trip anyway?': 'किराया अनुबंध पर अभी हस्ताक्षर नहीं हुए। क्या फिर भी ट्रिप शुरू करें?',
+  'Choose a driver and vehicle first': 'पहले ड्राइवर और वाहन चुनें', '✓ Good fit': '✓ सही चुनाव',
+  'Already booked then': 'उस समय पहले से बुक', 'busy then': 'उस समय व्यस्त', 'license expired': 'लाइसेंस खत्म', 'license missing': 'लाइसेंस नहीं है',
+  'Carries people, not cargo': 'सवारी ले जाती है, सामान नहीं', 'Cargo vehicle, no seats': 'सामान वाला वाहन, सीट नहीं',
+  // trip form and sheet
+  'Trip name': 'ट्रिप का नाम', 'Customer': 'ग्राहक', 'Address': 'पता', 'Date': 'तारीख़', 'Start': 'शुरू', 'End': 'खत्म', 'Notes': 'नोट्स',
+  'People': 'सवारी', 'Cargo': 'सामान', 'How many people': 'कितनी सवारी', 'Weight (kg)': 'वज़न (किग्रा)', 'Distance (km)': 'दूरी (किमी)',
+  'Driver': 'ड्राइवर', 'Vehicle': 'वाहन', 'No driver yet': 'अभी ड्राइवर नहीं', 'No vehicle yet': 'अभी वाहन नहीं', 'Customer pays for this trip': 'ग्राहक इस ट्रिप का भुगतान करता है',
+  'Edit trip': 'ट्रिप बदलें', 'Pick-up': 'पिकअप', 'Drop-off': 'ड्रॉप', 'Starts here': 'यहाँ से शुरू',
+  'Carrying': 'ले जा रहे', 'Earns money': 'कमाई होती है', 'Yes, customer trip': 'हाँ, ग्राहक की ट्रिप', 'No, empty move': 'नहीं, खाली चलना', 'Nothing': 'कुछ नहीं',
+  'Time split': 'समय का बँटवारा', 'Not chosen': 'चुना नहीं गया',
+  // vehicles
+  'Add vehicle': 'वाहन जोड़ें', 'Edit vehicle': 'वाहन बदलें', 'Types': 'प्रकार', 'Vehicle types': 'वाहन के प्रकार', 'New type': 'नया प्रकार', 'Add type': 'प्रकार जोड़ें', 'Carries': 'ले जाता है',
+  'Name': 'नाम', 'Type': 'प्रकार', 'Model': 'मॉडल', 'Plate': 'नंबर प्लेट', 'Seats': 'सीट', 'Usual seats': 'आमतौर पर सीट', 'Usual load (kg)': 'आमतौर पर भार (किग्रा)',
+  'Load it can carry (kg)': 'ले जाने की क्षमता (किग्रा)', 'Usual driver': 'नियमित ड्राइवर', 'No usual driver': 'कोई नियमित ड्राइवर नहीं',
+  'Distance on a full tank (km)': 'फुल टंकी पर दूरी (किमी)', 'In maintenance (cannot be used)': 'मरम्मत में (इस्तेमाल नहीं हो सकता)',
+  'Sedan': 'सेडान', 'SUV': 'एसयूवी', 'Van': 'वैन', 'Minibus': 'मिनीबस', 'Truck': 'ट्रक',
+  // drivers
+  'Add driver': 'ड्राइवर जोड़ें', 'Edit driver': 'ड्राइवर बदलें', 'Full name': 'पूरा नाम', 'Phone': 'फ़ोन', 'Home address': 'घर का पता',
+  'Driving license': 'ड्राइविंग लाइसेंस', 'License': 'लाइसेंस', 'Number': 'नंबर', 'Class': 'श्रेणी', 'Government ID': 'सरकारी पहचान पत्र', 'ID number': 'पहचान पत्र नंबर',
+  'Passport': 'पासपोर्ट', 'National ID card': 'राष्ट्रीय पहचान पत्र', 'Residence permit': 'निवास अनुमति', 'Other government ID': 'अन्य सरकारी पहचान पत्र',
+  'I checked the original ID in person': 'मैंने मूल पहचान पत्र खुद देखा है', 'Working': 'काम पर', 'Drives': 'चलाते हैं',
+  'License expired': 'लाइसेंस खत्म', 'License missing': 'लाइसेंस नहीं है', 'ID not checked': 'पहचान पत्र जाँचा नहीं गया', 'Home address missing': 'घर का पता नहीं है',
+  'Original not checked yet': 'मूल पहचान पत्र अभी जाँचा नहीं गया',
+  // demo data
+  'Airport pickup': 'एयरपोर्ट पिकअप', 'Conference shuttle': 'सम्मेलन शटल', 'Client transfer': 'ग्राहक ट्रांसफ़र', 'Hotel run': 'होटल की ट्रिप',
+  'Evening dinner': 'शाम का डिनर', 'Furniture delivery': 'फ़र्नीचर डिलीवरी', 'Reposition to airport': 'एयरपोर्ट पर वाहन पहुँचाना',
+  'No customer. Moving to the next pickup.': 'कोई ग्राहक नहीं। अगले पिकअप की ओर जा रही है।',
+};
+const trp = x => hiPhrase(x) ?? x;
+const PAT = [
+  [/^(\d+) earning, (\d+) running empty$/, m => `${m[1]} कमाई पर, ${m[2]} खाली चल रही`],
+  [/^(\d+) trips? planned$/, m => `${m[1]} ट्रिप तय`],
+  [/^(\d+) hire contracts? pending$/, m => `${m[1]} किराया अनुबंध बाकी`],
+  [/^(\d+) vehicle renewals? in progress$/, m => `${m[1]} वाहन का नवीनीकरण जारी`],
+  [/^(\d+) in your fleet$/, m => `आपकी गाड़ियाँ: ${m[1]}`],
+  [/^(\d+) working$/, m => `${m[1]} काम पर`],
+  [/^(\d+) trips?$/, m => `${m[1]} ट्रिप`],
+  [/^(\d+) people on board$/, m => `${m[1]} सवारी सवार`],
+  [/^(\d+) people$/, m => `${m[1]} सवारी`],
+  [/^([\d,]+) kg cargo on board$/, m => `${m[1]} किग्रा सामान लदा`],
+  [/^([\d,]+) kg cargo$/, m => `${m[1]} किग्रा सामान`],
+  [/^([\d,]+) kg load$/, m => `${m[1]} किग्रा भार`],
+  [/^([\d,]+) kg$/, m => `${m[1]} किग्रा`],
+  [/^(\d+) seats?$/, m => `${m[1]} सीट`],
+  [/^(\d+) km$/, m => `${m[1]} किमी`],
+  [/^About (\d+) km left$/, m => `लगभग ${m[1]} किमी बाकी`],
+  [/^Fuel (\d+)%$/, m => `ईंधन ${m[1]}%`],
+  [/^Fuel for ~(\d+) km \(trip (\d+) km\)$/, m => `ईंधन ~${m[1]} किमी के लिए (ट्रिप ${m[2]} किमी)`],
+  [/^Only (\d+) seats \(need (\d+)\)$/, m => `सिर्फ़ ${m[1]} सीट (ज़रूरत ${m[2]})`],
+  [/^Carries up to ([\d,]+) kg \(need ([\d,]+)\)$/, m => `${m[1]} किग्रा तक ले जा सकती है (ज़रूरत ${m[2]})`],
+  [/^Next: (.+)$/, m => `अगली: ${m[1]}`],
+  [/^First: (.+)$/, m => `पहली: ${m[1]}`],
+  [/^Until (\S+)$/, m => `${m[1]} तक`],
+  [/^Valid until (\S+)$/, m => `${m[1]} तक मान्य`],
+  [/^Expired (\d+) days ago$/, m => `${m[1]} दिन पहले खत्म`],
+  [/^expected (\S+)$/, m => `अपेक्षित ${m[1]}`],
+  [/^[Rr]enewal in progress, expected (\S+)$/, m => `नवीनीकरण जारी, अपेक्षित ${m[1]}`],
+  [/^Original checked on (\S+)$/, m => `मूल पहचान पत्र जाँचा गया: ${m[1]}`],
+  [/^(Insurance|Registration|Inspection) expired$/, m => `${DOCW[m[1]]} की अवधि खत्म`],
+  [/^(Insurance|Registration|Inspection) missing$/, m => `${DOCW[m[1]]} नहीं है`],
+  [/^(Insurance|Registration|Inspection) ends in (\d+) days$/, m => `${DOCW[m[1]]} ${m[2]} दिन में खत्म`],
+  [/^(Insurance|Registration|Inspection) renewal in progress$/, m => `${DOCW[m[1]]} का नवीनीकरण जारी`],
+  [/^License ends in (\d+) days$/, m => `लाइसेंस ${m[1]} दिन में खत्म`],
+  [/^Hire contract with (.+)$/, m => `${m[1]} के साथ किराया अनुबंध`],
+  [/^(.+) \(hire contract pending\)$/, m => `${trp(m[1])} (किराया अनुबंध बाकी)`],
+  [/^(.+) is already booked then$/, m => `${m[1]} उस समय पहले से बुक है`],
+  [/^(.+) \((people|cargo)\)$/, m => `${trp(m[1])} (${m[2] === 'people' ? 'सवारी' : 'सामान'})`],
+  [/^class (.+)$/, m => `श्रेणी ${m[1]}`],
+  [/^(Sedan|SUV|Van|Minibus|Truck) (\d+)$/, m => `${trp(m[1])} ${m[2]}`],
+  [/^Earning (\d+) min$/, m => `कमाई ${m[1]} मिनट`],
+  [/^Earning (\d+) h (\d+) min$/, m => `कमाई ${m[1]} घंटा ${m[2]} मिनट`],
+  [/^Empty (\d+) min$/, m => `खाली ${m[1]} मिनट`],
+  [/^Empty (\d+) h (\d+) min$/, m => `खाली ${m[1]} घंटा ${m[2]} मिनट`],
+  [/^Cannot delete: (\d+) vehicle\(s\) use this type\.$/, m => `हटा नहीं सकते: ${m[1]} वाहन इस प्रकार के हैं।`],
+  [/^(.+) \(([a-z ,]+)\)$/, m => { const parts = m[2].split(', ').map(hiPhrase); return parts.every(Boolean) ? `${m[1]} (${parts.join(', ')})` : null; }],
+];
+function hiPhrase(s) {
+  if (Object.hasOwn(HI, s)) return HI[s];
+  for (const [re, fn] of PAT) { const m = s.match(re); if (m) { const r = fn(m); if (r) return r; } }
+  const i = s.indexOf(': ');
+  if (i > 0) { const r = hiPhrase(s.slice(i + 2)); if (r) return trp(s.slice(0, i)) + ': ' + r; }
+  return null;
+}
+function hiText(s) {
+  const core = s.trim(); if (!core) return s;
+  const lead = s.slice(0, s.indexOf(core)), tail = s.slice(lead.length + core.length);
+  return lead + core.split(' · ').map(p => hiPhrase(p) ?? p).join(' · ') + tail;
+}
+function hiNode(root) {
+  if (root.nodeType === 3) { if (root.parentNode?.tagName !== 'TEXTAREA') root.nodeValue = hiText(root.nodeValue); return; }
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), list = [];
+  for (let n; (n = w.nextNode());) list.push(n);
+  list.forEach(n => { if (!['SCRIPT', 'STYLE', 'TEXTAREA'].includes(n.parentNode.tagName)) { const v = hiText(n.nodeValue); if (v !== n.nodeValue) n.nodeValue = v; } });
+  [root, ...root.querySelectorAll('[placeholder],[title],[aria-label]')].forEach(e => ['placeholder', 'title', 'aria-label'].forEach(a => {
+    const v = e.getAttribute(a); if (v) { const x = hiText(v); if (x !== v) e.setAttribute(a, x); }
+  }));
+}
+function setLang(l) {
+  lang = l === 'hi' ? 'hi' : 'en';
+  try { localStorage.setItem('dbeat.lang', lang); } catch {}
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-lang]').forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
+  close(); render();
+}
+new MutationObserver(ms => { if (lang === 'hi') ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1 || n.nodeType === 3) hiNode(n); })); }).observe(document.body, { childList: true, subtree: true });
+
+/* ---- Views ---- */
+const NAV = [['schedule', 'Schedule'], ['drivers', 'Drivers'], ['vehicles', 'Vehicles']];
+function render() {
+  $('#nav').innerHTML = NAV.map(([k, l]) => `<button class="${view === k ? 'on' : ''}" data-go="${k}">${I[k]}${l}</button>`).join('');
+  const m = $('#main'), key = view + mode + day;
+  m.innerHTML = view === 'schedule' ? scheduleView() : view === 'drivers' ? driversView() : vehiclesView();
+  if (key !== lastKey) { m.classList.remove('enter'); void m.offsetWidth; m.classList.add('enter'); lastKey = key; }
+}
+let lastKey = '';
+
+function vehicleState(v) {
+  const h = health(v);
+  const trips = db.appts.filter(a => a.vehicleId === v.id && a.date === day && a.status !== 'cancelled').sort((a, b) => mins(a.start) - mins(b.start));
+  if (h.level === 'maint') return { cls: 'maint', big: 'In maintenance', small: 'Not available' };
+  if (day === today()) {
+    const go = trips.find(a => a.status === 'dispatched');
+    if (go) {
+      const m = tripMode(go), ph = go.phase || 'pickup', cust = go.revenue !== false;
+      const btns = (cust && ph === 'pickup' ? `<button class="btn" data-phase="loaded" data-id="${go.id}">Picked up</button>` : cust && ph === 'loaded' ? `<button class="btn" data-phase="return" data-id="${go.id}">Dropped off</button>` : '')
+        + `<button class="btn outline" data-set="complete" data-id="${go.id}">End trip</button>`;
+      return { cls: m, big: `<span class="tag" style="--c:var(${MODE[m].css})">${MODE[m].label}</span>${esc(go.address || go.title)}`, small: `${esc(driver(go.driverId)?.name || 'No driver')} · ${phaseText(go)}`, btns };
+    }
+    const next = trips.find(a => a.status === 'scheduled' && mins(a.start) >= nowMin());
+    if (next) return { cls: 'idle', big: 'Parked', small: `Next: ${fmt(next.start)} · ${esc(next.title)}${next.hireDocs === 'waiting' ? ' · <span style="color:var(--contract)">hire contract pending</span>' : ''}` };
+    return { cls: 'idle', big: 'Parked', small: 'No more trips today' };
+  }
+  return trips.length ? { cls: 'idle', big: `${trips.length} trip${trips.length > 1 ? 's' : ''}`, small: `First: ${fmt(trips[0].start)} · ${esc(trips[0].title)}` } : { cls: 'idle', big: 'Free', small: 'No trips' };
+}
+
+function scheduleView() {
+  const fleet = db.vehicles.map(v => ({ v, h: health(v), s: vehicleState(v) }));
+  const free = f => f.s.cls === 'idle' && f.h.level !== 'bad', attn = f => ['soon', 'bad', 'maint'].includes(f.h.level);
+  const pick = { all: () => true, earn: f => f.s.cls === 'earn', empty: f => f.s.cls === 'empty', free, attn };
+  const n = Object.fromEntries(Object.entries(pick).map(([k, fn]) => [k, fleet.filter(fn).length]));
+  const trips = db.appts.filter(a => a.date === day && a.status !== 'cancelled').length;
+  const contracts = contractItems().length, renewing = vehicleDocItems().filter(i => i.state === 'process').length;
+  const headline = day === today() ? (n.earn || n.empty ? `${n.earn} earning, ${n.empty} running empty` : 'No vehicles on the road') : `${trips} trip${trips === 1 ? '' : 's'} planned`;
+  const chips = [['all', 'All'], ['earn', 'Earning', '--earn'], ['empty', 'Empty run', '--empty'], ['free', 'Free', '--ok'], ['attn', 'Needs attention', '--soon']]
+    .map(([k, l, c]) => `<button class="pchip ${ff === k ? 'sel' : ''}" data-ff="${k}">${c ? `<span class="dot" style="background:var(${c})"></span>` : ''}${l} <b>${n[k]}</b></button>`).join('');
+  const days = Array.from({ length: 7 }, (_, i) => addDays(day, i - 3)).map(s => `<button class="pchip ${s === day ? 'sel' : ''}" data-setday="${s}">${s === today() ? 'Today' : new Date(s + 'T12:00').toLocaleDateString(LOC(), { weekday: 'short', day: 'numeric' })}</button>`).join('');
+  const body = mode === 'fleet' ? fleetView(fleet.filter(pick[ff] || pick.all)) : planView();
+  return `<div class="hero"><h1>${headline}</h1>
+    <div class="sub">${nice(day)}${contracts ? ` · ${contracts} hire contract${contracts > 1 ? 's' : ''} pending` : ''}${renewing ? ` · ${renewing} vehicle renewal${renewing > 1 ? 's' : ''} in progress` : ''}</div></div>
+  <div class="chiprow"><button class="icon-btn" data-day="-1" aria-label="Previous day">${I.left}</button>${days}<button class="icon-btn" data-day="1" aria-label="Next day">${I.right}</button></div>
+  <div class="bar"><div class="seg"><button class="${mode === 'fleet' ? 'on' : ''}" data-mode="fleet">Fleet</button><button class="${mode === 'plan' ? 'on' : ''}" data-mode="plan">Plan</button></div>
+    <button class="btn" data-new-trip>${I.plus}New trip</button></div>
+  ${mode === 'fleet' ? `<div class="chiprow">${chips}</div>` : ''}${body}`;
+}
+
+function legend() { return `<div class="legend">${Object.entries(HEALTH).map(([k, h]) => `<span>${dot(k)}${h.label}</span>`).join('')}<span><span class="dot" style="background:var(${CONTRACT.css})"></span>${CONTRACT.label}</span>${Object.values(MODE).map(m => `<span><span class="dot" style="background:var(${m.css})"></span>${m.label}</span>`).join('')}</div>`; }
+
+function fleetView(fleet) {
+  const unassigned = db.appts.filter(a => a.date === day && !a.vehicleId && a.status !== 'cancelled');
+  return `<div class="grid">${fleet.map(({ v, h, s }) => `<div class="card vcard" data-vehicle="${v.id}">
+    <div class="vtop"><div><b>${vtag(v)}</b><div class="meta">${esc(typeName(v.typeId))} · ${esc(v.plate)}</div></div>${healthPill(h)}</div>
+    <div class="vstate ${s.cls}"><div class="big">${s.big}</div><small>${s.small}</small></div>
+    ${s.btns ? `<div class="btns">${s.btns}</div>` : ''}
+    <div class="vfoot">${fuelBar(v.fuel)}${capLabel(v)}</div></div>`).join('') || '<div class="card empty">No vehicles match. Try another filter.</div>'}</div>
+  ${unassigned.length ? `<div class="section">Trips without a vehicle</div><div class="card">${unassigned.map(a => `<div class="nov" data-open="${a.id}">
+    <div><b>${esc(a.title)}</b><div class="meta">${fmt(a.start)}–${fmt(a.end)} · ${loadText(a)}</div></div><span class="btn ghost sm">Choose vehicle</span></div>`).join('')}</div>` : ''}${papersPanel()}`;
+}
+
+function blockHTML(a) {
+  const left = Math.max(0, (mins(a.start) - DAY_START) / DAY_SPAN * 100);
+  const width = Math.max(3, (Math.min(mins(a.end), DAY_START + DAY_SPAN) - Math.max(mins(a.start), DAY_START)) / DAY_SPAN * 100);
+  return `<button class="blk ${a.status === 'dispatched' ? tripMode(a) : TRIPCLS[a.status]}" style="left:${left}%;width:${width}%" data-open="${a.id}" title="${esc(a.title)}${a.hireDocs === 'waiting' ? ' (hire contract pending)' : ''}">${a.hireDocs === 'waiting' ? '<i class="cdot"></i>' : ''}<b>${esc(a.title)}</b>${fmt(a.start)}–${fmt(a.end)}</button>`;
+}
+function planView() {
+  const trips = db.appts.filter(a => a.date === day);
+  const hours = Array.from({ length: 16 }, (_, i) => { const h = 6 + i; return `<span>${lang === 'hi' ? h : (h + 11) % 12 + 1}${lang === 'hi' ? '' : h < 12 ? 'a' : 'p'}</span>`; }).join('');
+  const loose = trips.filter(a => !a.vehicleId);
+  const nowPct = day === today() ? (nowMin() - DAY_START) / DAY_SPAN : -1;
+  return `${legend()}<div class="card tl"><div class="tl-inner">
+    ${nowPct > 0 && nowPct < 1 ? `<div class="tl-now" style="left:calc(200px + (100% - 200px) * ${nowPct})"></div>` : ''}
+    <div class="tl-row top"><div></div><div class="tl-hours">${hours}</div></div>
+    ${loose.length ? `<div class="tl-row"><div class="tl-who"><b>No vehicle yet</b></div><div class="tl-track" data-slot="">${loose.map(blockHTML).join('')}</div></div>` : ''}
+    ${db.vehicles.map(v => { const h = health(v); return `<div class="tl-row"><div class="tl-who"><b>${dot(h.level)}${vtag(v)}</b>${fuelBar(v.fuel)}</div>
+      <div class="tl-track ${h.level === 'maint' ? 'maint' : ''}" ${h.level === 'maint' ? '' : `data-slot="${v.id}"`}>${trips.filter(a => a.vehicleId === v.id).map(blockHTML).join('')}</div></div>`; }).join('')}
+  </div></div><p class="meta" style="margin-top:12px">Click an empty spot to plan a trip for that vehicle.</p>`;
+}
+
+function driversView() {
+  const go = d => db.appts.find(a => a.driverId === d.id && a.date === today() && a.status === 'dispatched');
+  return `<div class="head"><div><h1>Drivers</h1><div class="sub">${db.drivers.filter(d => d.active).length} working</div></div><button class="btn" data-new-driver>${I.plus}Add driver</button></div>
+  <div class="card">${db.drivers.map(d => { const h = driverHealth(d), i = h.issues[0], cars = db.vehicles.filter(v => v.driverId === d.id);
+    return `<div class="row" data-driver="${d.id}"><div style="display:flex;gap:14px;align-items:center"><div class="avatar">${esc(d.name.trim()[0] || '?')}</div>
+    <div><b>${esc(d.name)}</b> <span class="nick">“${esc(nick(d.id))}”</span><div class="meta">${cars.length ? esc(cars.map(c => c.name).join(', ')) + ' · ' : ''}${esc(d.phone)}${i ? ` · <span style="color:var(${HEALTH[i.lvl].css})">${esc(i.text)}</span>` : ''}</div></div></div>
+    <span class="pill" style="--c:var(${!d.active ? '--idle' : go(d) ? tripColor(go(d)) : HEALTH[h.level].css})">${d.active ? (go(d) ? `<span class="dot" style="background:var(${tripColor(go(d))})"></span>${tripLabel(go(d))}` : `${dot(h.level)}${DRIVER_LABEL[h.level]}`) : `<span class="dot" style="background:var(--idle)"></span>Off`}</span></div>`; }).join('') || '<div class="empty">No drivers yet.</div>'}</div>`;
+}
+
+function vehiclesView() {
+  const list = db.vehicles.filter(v => !typeFilter || v.typeId === typeFilter);
+  return `<div class="head"><div><h1>Vehicles</h1><div class="sub">${db.vehicles.length} in your fleet</div></div>
+    <div class="tools"><button class="btn ghost" data-types>Types</button><button class="btn" data-new-vehicle>${I.plus}Add vehicle</button></div></div>
+  <div class="chips"><button class="chip ${typeFilter ? '' : 'on'}" data-type="">All</button>${db.types.map(t => `<button class="chip ${typeFilter === t.id ? 'on' : ''}" data-type="${t.id}">${esc(t.name)}</button>`).join('')}</div>
+  <div class="grid">${list.map(v => { const h = health(v); return `<div class="card vcard" data-vehicle="${v.id}">
+    <div class="vtop"><div><b>${vtag(v)}</b><div class="meta">${esc(typeName(v.typeId))} · ${esc(v.plate)}</div></div>${healthPill(h)}</div>
+    <div class="meta">${esc(v.model)}</div>
+    <div class="vfoot">${fuelBar(v.fuel)}${capLabel(v)}</div></div>`; }).join('') || '<div class="card empty">No vehicles of this type.</div>'}</div>`;
+}
+
+/* ---- Dialogs ---- */
+const dlg = $('#dlg');
+const open = html => { dlg.innerHTML = `<div class="dlg">${html}</div>`; if (!dlg.open) dlg.showModal(); };
+const close = () => dlg.open && dlg.close();
+const field = (label, name, val = '', type = 'text', extra = '') => `<label>${label}<input name="${name}" type="${type}" value="${esc(val)}" ${extra}></label>`;
+const blank = () => ({ title: '', customer: '', address: '', date: day, start: '09:00', end: '10:00', kind: 'people', passengers: 1, cargoKg: '', distance: '', driverId: '', vehicleId: '', revenue: true, hireDocs: 'none', notes: '' });
+
+function tripForm(a) {
+  a = { kind: 'people', cargoKg: '', passengers: 0, revenue: true, hireDocs: 'none', ...a };
+  const driverOpts = `<option value="">No driver yet</option>` + db.drivers.filter(d => d.active || d.id === a.driverId).map(d => `<option value="${d.id}" ${d.id === a.driverId ? 'selected' : ''}>${esc(d.name)}</option>`).join('');
+  open(`<h2>${a.id ? 'Edit trip' : 'New trip'}</h2>
+  <form id="f-trip" data-id="${a.id || ''}">
+    <div id="warn"></div>
+    ${field('Trip name', 'title', a.title, 'text', 'required')}
+    <div class="g2">${field('Customer', 'customer', a.customer)}${field('Address', 'address', a.address)}</div>
+    <div class="g3">${field('Date', 'date', a.date, 'date', 'required')}${field('Start', 'start', a.start, 'time', 'required')}${field('End', 'end', a.end, 'time', 'required')}</div>
+    <input type="hidden" name="kind" value="${a.kind}">
+    <div class="seg" id="kindseg" style="margin-bottom:14px"><button type="button" data-kind="people" class="${a.kind === 'people' ? 'on' : ''}">People</button><button type="button" data-kind="cargo" class="${a.kind === 'cargo' ? 'on' : ''}">Cargo</button></div>
+    <div class="g3">
+      <label data-for="people" ${a.kind === 'cargo' ? 'hidden' : ''}>How many people<input name="passengers" type="number" min="0" value="${esc(a.passengers)}"></label>
+      <label data-for="cargo" ${a.kind === 'cargo' ? '' : 'hidden'}>Weight (kg)<input name="cargoKg" type="number" min="0" value="${esc(a.cargoKg)}"></label>
+      ${field('Distance (km)', 'distance', a.distance, 'number', 'min="0"')}
+      <label>Driver<select name="driverId">${driverOpts}</select></label></div>
+    <div class="g2"><label>Hire contract with the hiring company<select name="hireDocs">${[['none', 'Not needed'], ['waiting', 'Being prepared'], ['received', 'Signed and ready']].map(([k, l]) => `<option value="${k}" ${a.hireDocs === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+      <label class="check" style="align-self:end;padding-bottom:12px"><input type="checkbox" name="revenue" ${a.revenue !== false ? 'checked' : ''}>Customer pays for this trip</label></div>
+    <label style="margin-bottom:8px">Vehicle</label>
+    <input type="hidden" name="vehicleId" value="${a.vehicleId || ''}">
+    <div class="vpick" id="vpick"></div>
+    <label>Notes<textarea name="notes" rows="2">${esc(a.notes)}</textarea></label>
+    <div class="actions"><button type="button" class="btn ghost" data-close>Cancel</button><button class="btn">Save</button></div>
+  </form>`);
+  refreshTrip();
+}
+function readTrip(form) {
+  const f = Object.fromEntries(new FormData(form));
+  return { id: form.dataset.id || '', title: f.title.trim(), customer: f.customer.trim(), address: f.address.trim(), date: f.date, start: f.start, end: f.end, kind: f.kind, passengers: f.kind === 'people' ? +f.passengers || 0 : 0, cargoKg: f.kind === 'cargo' ? +f.cargoKg || 0 : 0, distance: +f.distance || 0, driverId: f.driverId, vehicleId: f.vehicleId, revenue: 'revenue' in f, hireDocs: f.hireDocs, notes: f.notes.trim() };
+}
+function refreshTrip() {
+  const form = $('#f-trip'); if (!form) return;
+  const a = readTrip(form), ok = a.date && a.start && a.end;
+  [...form.elements.driverId.options].forEach(o => {
+    if (!o.value) return;
+    const d = driver(o.value), why = [];
+    if (ok && busy(a, 'driverId', d.id)) why.push('busy then');
+    if (driverHealth(d).issues.some(i => i.lvl === 'bad')) why.push(driverHealth(d).issues.find(i => i.lvl === 'bad').text.toLowerCase());
+    o.textContent = d.name + (why.length ? ` (${why.join(', ')})` : '');
+  });
+  const opts = db.vehicles.map(v => ({ v, why: ok ? fitReasons(v, a) : [] })).sort((x, y) => x.why.length - y.why.length || x.v.name.localeCompare(y.v.name));
+  const sel = a.vehicleId;
+  $('#vpick').innerHTML = `<button type="button" class="vopt ${sel ? '' : 'sel'}" data-pick=""><b>No vehicle yet</b></button>` + opts.map(({ v, why }) => `<button type="button" class="vopt ${sel === v.id ? 'sel' : ''}" data-pick="${v.id}">
+    <div class="top"><b>${dot(health(v).level)} ${vtag(v)} <span class="meta">${esc(typeName(v.typeId))} · ${capText(v)}</span></b>${fuelBar(v.fuel)}</div>
+    <div class="why ${why.length ? 'no' : 'good'}">${why.length ? esc(why.join(' · ')) : '✓ Good fit'}</div></button>`).join('');
+}
+
+function tripDetail(id) {
+  const a = db.appts.find(x => x.id === id); if (!a) return;
+  const v = vehicle(a.vehicleId), live = a.status === 'dispatched', pt = phaseTimes(a), cust = a.revenue !== false, ph = a.phase || 'pickup';
+  const phaseBtn = (to, label) => `<button class="btn cta" data-phase="${to}" data-id="${a.id}">${label}</button>`;
+  const cta = a.status === 'scheduled'
+    ? `<button class="btn cta" data-set="dispatch" data-id="${a.id}" ${!a.driverId || !a.vehicleId ? 'disabled title="Choose a driver and vehicle first"' : ''}>Start trip</button>`
+    : live ? (cust && ph === 'pickup' ? phaseBtn('loaded', 'Picked up') : cust && ph === 'loaded' ? phaseBtn('return', 'Dropped off') : '')
+      + `<button class="btn ${cust && ph !== 'return' ? 'outline' : ''} cta" data-set="complete" data-id="${a.id}">End trip</button>` : '';
+  const hire = { none: 'Not needed', waiting: 'Being prepared', received: 'Signed and ready' }[a.hireDocs || 'none'];
+  const tint = k => `color:color-mix(in srgb,var(${MODE[k].css}) 80%,var(--text))`;
+  open(`<div class="sheet-head"><span class="pill" style="--c:var(${tripColor(a)})">${tripLabel(a)}</span><h2>${esc(a.title)}</h2>
+    <div class="sub">${nice(a.date)} · ${fmt(a.start)}–${fmt(a.end)}${a.endedAt ? ` · ended ${fmt(a.endedAt)}` : ''}</div></div>
+  <div class="route">
+    <div class="stop"><span class="mk dot"></span><div><b>${esc(a.customer || 'Start')}</b><span class="meta">${cust ? 'Pick-up' : 'Starts here'}</span></div><time>${fmt(a.start)}</time></div>
+    <div class="stop"><span class="mk pin"></span><div><b>${esc(a.address || 'Drop-off')}</b><span class="meta">Drop-off</span></div><time>${fmt(a.end)}</time></div>
+  </div>
+  <dl class="kv">
+  <dt>Carrying</dt><dd>${cust ? loadText(a) : 'Nothing'}${a.distance ? ` · ${a.distance} km` : ''}</dd>
+  <dt>Earns money</dt><dd>${cust ? 'Yes, customer trip' : 'No, empty move'}</dd>
+  <dt>Hire contract</dt><dd>${hire}${a.hireDocs === 'waiting' ? ` <button class="btn ghost sm" style="margin-left:8px" data-hire-ok="${a.id}">Mark signed</button>` : ''}</dd>
+  ${pt ? `<dt>Time split</dt><dd><span style="${tint('earn')}">Earning ${fmtDur(pt.earn)}</span> · <span style="${tint('empty')}">Empty ${fmtDur(pt.empty)}</span></dd>` : ''}
+  <dt>Driver</dt><dd>${esc(driver(a.driverId)?.name || 'Not chosen')}</dd>
+  <dt>Vehicle</dt><dd>${v ? `${vtag(v)} ${fuelBar(v.fuel)}` : 'Not chosen'}</dd>${a.notes ? `<dt>Notes</dt><dd>${esc(a.notes)}</dd>` : ''}</dl>
+  <div class="iconrow">
+    <button class="ib" data-edit="${a.id}">${I.edit}Edit</button>
+    <button class="ib" data-copy="${a.id}">${I.copy}Copy</button>
+    ${a.status === 'scheduled' || live ? `<button class="ib" data-set="cancel" data-id="${a.id}">${I.cancel}Cancel</button>` : ''}
+    <button class="ib red" data-del="${a.id}">${I.trash}Delete</button>
+  </div>
+  <div class="ctas">${cta}</div>`);
+}
+
+function endDialog(id) {
+  const a = db.appts.find(x => x.id === id), v = vehicle(a.vehicleId);
+  open(`<h2>End trip</h2><p class="meta" style="margin-top:-8px">${esc(a.title)}${v ? ' · ' + esc(v.name) : ''}</p>
+  <form id="f-end" data-id="${id}">
+    ${v ? `<label>Fuel now: <b id="fuelOut">${v.fuel}%</b><input type="range" name="fuel" min="0" max="100" step="5" value="${v.fuel}"></label>` : ''}
+    <div class="actions"><button type="button" class="btn ghost" data-close>Not yet</button><button class="btn">End trip</button></div></form>`);
+}
+
+function vehicleDetail(id) {
+  const v = vehicle(id), h = health(v), d = driver(v.driverId);
+  const hi = h.issues;
+  const docs = DOCS.map(([k, l]) => { const dt = v.docs?.[k], i = hi.find(x => x.doc === k), n = dt ? daysUntil(dt) : null;
+    return `<div><div class="docline">${dot(i ? i.lvl : 'ok')}<span>${l}</span><span class="meta" style="margin-left:auto">${dt ? (n < 0 ? `Expired ${-n} days ago` : `Until ${dt}`) : 'Missing'}</span></div>${i?.proc ? `<div class="meta" style="margin-left:17px">Renewal in progress${i.exp ? ', expected ' + esc(i.exp) : ''}</div>` : ''}</div>`; }).join('');
+  const trips = db.appts.filter(a => a.vehicleId === id && a.date === day && a.status !== 'cancelled').sort((a, b) => mins(a.start) - mins(b.start));
+  open(`<h2>${vtag(v)} ${healthPill(h)}</h2>
+  <dl class="kv"><dt>Type</dt><dd>${esc(typeName(v.typeId))} · ${capText(v)}</dd><dt>Usual driver</dt><dd>${d ? esc(d.name) : '—'}</dd><dt>Model</dt><dd>${esc(v.model || '—')}</dd><dt>Plate</dt><dd>${esc(v.plate || '—')}</dd>
+  <dt>Fuel</dt><dd>${fuelBar(v.fuel)}<div class="meta">About ${Math.round(v.fuel / 100 * v.range)} km left</div></dd></dl>
+  <div class="section" style="margin-top:0">Vehicle documents</div><div style="display:grid;gap:10px;margin-bottom:18px">${docs}</div>
+  <div class="section" style="margin-top:0">${day === today() ? 'Today' : nice(day)}</div>
+  <div style="margin-bottom:18px">${trips.length ? trips.map(a => `<div class="row" style="padding:8px 0" data-open="${a.id}"><span>${esc(a.title)} <span class="meta">${tripLabel(a)}</span></span><span class="meta">${fmt(a.start)}–${fmt(a.end)}</span></div>`).join('') : '<span class="meta">No trips</span>'}</div>
+  <div class="actions"><button class="btn ghost" data-close>Close</button><button class="btn" data-edit-vehicle="${v.id}">Edit</button></div>`);
+}
+
+function vehicleForm(v) {
+  const t0 = db.types[0];
+  v = { name: '', typeId: t0?.id || '', model: '', plate: '', seats: t0?.seats || 4, capacity: t0?.capacity || 1000, fuel: 100, range: 600, driverId: '', maintenance: false, docs: {}, ...v };
+  const cargo = kindOf(v) === 'cargo';
+  open(`<h2>${v.id ? 'Edit vehicle' : 'Add vehicle'}</h2><form id="f-vehicle" data-id="${v.id || ''}">
+    ${field('Name', 'name', v.name, 'text', 'required placeholder="Van 01"')}
+    <div class="g2"><label>Type<select name="typeId">${db.types.map(t => `<option value="${t.id}" ${t.id === v.typeId ? 'selected' : ''}>${esc(t.name)} (${t.kind === 'cargo' ? 'cargo' : 'people'})</option>`).join('')}</select></label>
+      <label data-for="people" ${cargo ? 'hidden' : ''}>Seats<input name="seats" type="number" min="1" value="${esc(v.seats)}"></label>
+      <label data-for="cargo" ${cargo ? '' : 'hidden'}>Load it can carry (kg)<input name="capacity" type="number" min="1" value="${esc(v.capacity)}"></label></div>
+    <div class="g2">${field('Model', 'model', v.model)}${field('Plate', 'plate', v.plate)}</div>
+    <label>Usual driver<select name="driverId"><option value="">No usual driver</option>${db.drivers.map(d => `<option value="${d.id}" ${d.id === v.driverId ? 'selected' : ''}>${esc(d.name)}</option>`).join('')}</select></label>
+    <label>Fuel now: <b id="fuelOut">${v.fuel}%</b><input type="range" name="fuel" min="0" max="100" step="5" value="${v.fuel}"></label>
+    ${field('Distance on a full tank (km)', 'range', v.range, 'number', 'min="1"')}
+    <div class="section" style="margin-top:6px">Vehicle documents: valid until</div>
+    <div class="g3">${DOCS.map(([k, l]) => field(l, 'doc_' + k, v.docs?.[k] || '', 'date')).join('')}</div>
+    <div class="section" style="margin-top:6px">Renewals in progress</div>
+    ${DOCS.map(([k, l]) => `<div class="procrow"><label class="check" style="margin:0"><input type="checkbox" name="proc_${k}" ${v.docState?.[k]?.inProcess ? 'checked' : ''}>${l} renewal in progress</label><input name="exp_${k}" type="date" value="${esc(v.docState?.[k]?.expected || '')}" title="Expected by"></div>`).join('')}
+    <div class="meta" style="margin-bottom:14px">Tick it once you have applied for new documents, and add the date you expect them.</div>
+    <label class="check"><input type="checkbox" name="maintenance" ${v.maintenance ? 'checked' : ''}>In maintenance (cannot be used)</label>
+    <div class="actions">${v.id ? `<button type="button" class="btn danger" data-del-vehicle="${v.id}">Delete</button>` : ''}<button type="button" class="btn ghost" data-close>Cancel</button><button class="btn">Save</button></div></form>`);
+}
+
+function driverDetail(id) {
+  const d = driver(id), h = driverHealth(d), cars = db.vehicles.filter(v => v.driverId === id);
+  const n = d.licenseExpiry ? daysUntil(d.licenseExpiry) : null, lvl = n === null || n < 0 ? 'bad' : n <= 30 ? 'soon' : 'ok';
+  open(`<h2>${esc(d.name)} <span class="nick">“${esc(nick(id))}”</span></h2>
+  ${h.issues.length ? `<div style="display:grid;gap:6px;margin-bottom:16px">${h.issues.map(i => `<div class="docline">${dot(i.lvl)}<span>${esc(i.text)}</span></div>`).join('')}</div>` : ''}
+  <dl class="kv"><dt>Phone</dt><dd>${esc(d.phone || '—')}</dd><dt>Home address</dt><dd>${esc(d.homeAddress || '—')}</dd>
+  <dt>License</dt><dd>${esc(d.licenseNumber || '—')}${d.licenseClass ? ` · class ${esc(d.licenseClass)}` : ''}<div class="docline meta">${dot(lvl)}${d.licenseExpiry ? (n < 0 ? `Expired ${-n} days ago` : `Valid until ${d.licenseExpiry}`) : 'No date'}</div></dd>
+  <dt>Government ID</dt><dd>${esc(d.idType || '—')} · ${maskId(d.idNumber)}<div class="meta">${d.idChecked ? `Original checked${d.idCheckedDate ? ' on ' + d.idCheckedDate : ''}` : 'Original not checked yet'}</div></dd>
+  <dt>Drives</dt><dd>${cars.length ? esc(cars.map(c => c.name).join(', ')) : '—'}</dd></dl>
+  <div class="actions"><button class="btn ghost" data-close>Close</button><button class="btn" data-edit-driver="${id}">Edit</button></div>`);
+}
+function driverForm(d) {
+  open(`<h2>${d.id ? 'Edit driver' : 'Add driver'}</h2><form id="f-driver" data-id="${d.id || ''}">
+    <div class="g2">${field('Full name', 'name', d.name, 'text', 'required')}${field('Phone', 'phone', d.phone)}</div>
+    ${field('Home address', 'homeAddress', d.homeAddress)}
+    <div class="section" style="margin-top:6px">Driving license</div>
+    <div class="g3">${field('Number', 'licenseNumber', d.licenseNumber)}${field('Class', 'licenseClass', d.licenseClass, 'text', 'placeholder="B, C, D…"')}${field('Valid until', 'licenseExpiry', d.licenseExpiry, 'date')}</div>
+    <div class="section" style="margin-top:6px">Government ID</div>
+    <div class="g2"><label>Type<select name="idType">${ID_TYPES.map(x => `<option ${x === d.idType ? 'selected' : ''}>${x}</option>`).join('')}</select></label>${field('ID number', 'idNumber', d.idNumber)}</div>
+    <label class="check"><input type="checkbox" name="idChecked" ${d.idChecked ? 'checked' : ''}>I checked the original ID in person</label>
+    <label class="check"><input type="checkbox" name="active" ${d.active !== false ? 'checked' : ''}>Working</label>
+    <div class="actions">${d.id ? `<button type="button" class="btn danger" data-del-driver="${d.id}">Delete</button>` : ''}<button type="button" class="btn ghost" data-close>Cancel</button><button class="btn">Save</button></div></form>`);
+}
+
+function typesDialog(msg = '') {
+  open(`<h2>Vehicle types</h2>${msg ? `<div class="warn">${esc(msg)}</div>` : ''}
+  <div class="card" style="box-shadow:none;border:1px solid var(--line);margin-bottom:16px">${db.types.map(t => `<div class="row" style="cursor:default"><span><b>${esc(t.name)}</b> <span class="meta">${t.kind === 'cargo' ? `Cargo · ${(+t.capacity || 0).toLocaleString()} kg` : `People · ${t.seats} seats`}</span></span>
+    <button class="btn danger sm" data-del-type="${t.id}">Delete</button></div>`).join('') || '<div class="empty">No types yet.</div>'}</div>
+  <form id="f-type"><div class="g2">${field('New type', 'name', '', 'text', 'required placeholder="Truck"')}
+    <label>Carries<select name="kind"><option value="people">People</option><option value="cargo">Cargo</option></select></label></div>
+    <div class="g2"><label data-for="people">Usual seats<input name="seats" type="number" min="1" value="4"></label>
+      <label data-for="cargo" hidden>Usual load (kg)<input name="capacity" type="number" min="1" value="1000"></label></div>
+  <div class="actions"><button type="button" class="btn ghost" data-close>Close</button><button class="btn">Add type</button></div></form>`);
+}
+function renewDialog(vid, key, mode) {
+  const v = vehicle(vid), label = DOCS.find(([k]) => k === key)[1], st = v.docState?.[key] || {};
+  open(`<h2>${mode === 'start' ? 'Start renewal' : 'Mark renewed'}</h2><p class="meta" style="margin-top:-8px">${esc(v.name)} · ${label}</p>
+  <form id="f-renew" data-vid="${vid}" data-key="${key}" data-mode="${mode}">
+    ${mode === 'start' ? field('Expected by', 'expected', st.expected || '', 'date') + field('Who is handling it? (optional)', 'note', st.note || '') : field('New valid until', 'until', '', 'date', 'required')}
+    <div class="actions"><button type="button" class="btn ghost" data-close>Cancel</button><button class="btn">${mode === 'start' ? 'Save' : 'Done'}</button></div></form>`);
+}
+let pending = null;
+function ask(msg, yes, o = {}) {
+  pending = yes;
+  open(`<h2>${esc(msg)}</h2><div class="actions"><button type="button" class="btn ghost" data-close>${o.no || 'Keep it'}</button><button type="button" class="btn ${o.cls || 'danger'}" data-yes>${o.label || 'Delete'}</button></div>`);
+}
+const syncKind = (form, kind) => form.querySelectorAll('[data-for]').forEach(l => { l.hidden = l.dataset.for !== kind; });
+
+/* ---- Events ---- */
+document.addEventListener('click', e => {
+  const t = e.target.closest('button,[data-open],[data-driver],[data-vehicle],[data-slot]'); if (!t) return;
+  const d = t.dataset;
+  if ('yes' in d) { const f = pending; pending = null; close(); if (f) f(); }
+  else if (d.lang) setLang(d.lang);
+  else if (d.go) { view = d.go; render(); }
+  else if (d.mode) { mode = d.mode; render(); }
+  else if (d.ff) { ff = d.ff; render(); }
+  else if (d.setday) { day = d.setday; render(); }
+  else if (d.type !== undefined) { typeFilter = d.type; render(); }
+  else if (d.day !== undefined) { day = d.day === '0' ? today() : addDays(day, +d.day); render(); }
+  else if (d.kind) { const f = $('#f-trip'); f.elements.kind.value = d.kind; $('#kindseg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b === t)); syncKind(f, d.kind); delete f.dataset.ack; refreshTrip(); }
+  else if ('newTrip' in d) tripForm(blank());
+  else if (d.open) tripDetail(d.open);
+  else if (d.vehicle) vehicleDetail(d.vehicle);
+  else if (d.driver) driverDetail(d.driver);
+  else if (d.edit) tripForm(db.appts.find(x => x.id === d.edit));
+  else if (d.copy) tripForm({ ...db.appts.find(x => x.id === d.copy), id: '', status: 'scheduled', endedAt: '', phase: '', phaseLog: [] });
+  else if (d.pick !== undefined) {
+    const f = $('#f-trip'); f.elements.vehicleId.value = d.pick; delete f.dataset.ack;
+    const v = vehicle(d.pick); if (v?.driverId && !f.elements.driverId.value) f.elements.driverId.value = v.driverId;
+    refreshTrip();
+  }
+  else if (d.set === 'complete') endDialog(d.id);
+  else if (d.set === 'dispatch') {
+    const a = db.appts.find(x => x.id === d.id);
+    const go = () => { a.status = 'dispatched'; a.phase = a.revenue === false ? 'empty' : 'pickup'; a.phaseLog = [{ p: a.phase, at: Date.now() }]; save(); close(); render(); };
+    if (a.hireDocs === 'waiting') ask('The hire contract is not signed yet. Start the trip anyway?', go, { label: 'Start anyway', cls: 'ghost', no: 'Not yet' }); else go();
+  }
+  else if (d.set === 'cancel') { db.appts.find(x => x.id === d.id).status = 'cancelled'; save(); close(); render(); }
+  else if (d.phase) { const a = db.appts.find(x => x.id === d.id); a.phase = d.phase; (a.phaseLog ||= []).push({ p: d.phase, at: Date.now() }); save(); close(); render(); }
+  else if (d.hireOk) { db.appts.find(x => x.id === d.hireOk).hireDocs = 'received'; save(); close(); render(); }
+  else if (d.renewStart) renewDialog(...d.renewStart.split('|'), 'start');
+  else if (d.renewDone) renewDialog(...d.renewDone.split('|'), 'done');
+  else if (d.del) { ask('Delete this trip?', () => { db.appts = db.appts.filter(x => x.id !== d.del); save(); close(); render(); }); }
+  else if ('newDriver' in d) driverForm({});
+  else if (d.editDriver) driverForm(driver(d.editDriver));
+  else if ('newVehicle' in d) vehicleForm({});
+  else if (d.editVehicle) vehicleForm(vehicle(d.editVehicle));
+  else if ('types' in d) typesDialog();
+  else if (d.delType) {
+    const n = db.vehicles.filter(v => v.typeId === d.delType).length;
+    if (n) typesDialog(`Cannot delete: ${n} vehicle(s) use this type.`); else { db.types = db.types.filter(x => x.id !== d.delType); save(); typesDialog(); render(); }
+  }
+  else if (d.delDriver) { ask('Delete this driver? Their trips will have no driver.', () => { db.drivers = db.drivers.filter(x => x.id !== d.delDriver); db.appts.forEach(a => { if (a.driverId === d.delDriver) a.driverId = ''; }); db.vehicles.forEach(v => { if (v.driverId === d.delDriver) v.driverId = ''; }); save(); close(); render(); }); }
+  else if (d.delVehicle) { ask('Delete this vehicle? Its trips will have no vehicle.', () => { db.vehicles = db.vehicles.filter(x => x.id !== d.delVehicle); db.appts.forEach(a => { if (a.vehicleId === d.delVehicle) a.vehicleId = ''; }); save(); close(); render(); }); }
+  else if ('close' in d) close();
+  else if (d.slot !== undefined && !e.target.closest('.blk')) {
+    const r = t.getBoundingClientRect(), h = Math.floor((DAY_START + (e.clientX - r.left) / r.width * DAY_SPAN) / 60), p = n => String(n).padStart(2, '0');
+    const v = vehicle(d.slot);
+    tripForm({ ...blank(), start: `${p(h)}:00`, end: `${p(Math.min(h + 1, 23))}:00`, vehicleId: d.slot, driverId: v?.driverId || '', kind: v && kindOf(v) === 'cargo' ? 'cargo' : 'people' });
+  }
+});
+dlg.addEventListener('input', e => {
+  if (e.target.form?.id === 'f-trip') { delete e.target.form.dataset.ack; refreshTrip(); }
+  if (e.target.name === 'fuel') $('#fuelOut').textContent = e.target.value + '%';
+});
+dlg.addEventListener('change', e => {
+  const f = e.target.form;
+  if (e.target.name === 'typeId' && f.id === 'f-vehicle') { const t = typeOf(e.target.value); if (t) { syncKind(f, t.kind); if (t.kind === 'cargo') f.elements.capacity.value = t.capacity || 1000; else f.elements.seats.value = t.seats || 4; } }
+  if (e.target.name === 'kind' && f.id === 'f-type') syncKind(f, e.target.value);
+});
+dlg.addEventListener('submit', e => {
+  e.preventDefault();
+  const form = e.target, f = Object.fromEntries(new FormData(form)), id = form.dataset.id;
+  if (form.id === 'f-trip') {
+    const a = readTrip(form);
+    if (mins(a.end) <= mins(a.start)) { $('#warn').innerHTML = '<div class="warn">End time must be after start time.</div>'; return; }
+    const p = problems(a);
+    if (p.length && !form.dataset.ack) { $('#warn').innerHTML = `<div class="warn"><b>Check this:</b><br>${p.map(esc).join('<br>')}<br><br>Press Save again to continue anyway.</div>`; form.dataset.ack = '1'; $('#warn').scrollIntoView({ block: 'nearest' }); return; }
+    if (id) Object.assign(db.appts.find(x => x.id === id), a); else db.appts.push({ ...a, id: uid(), status: 'scheduled', phase: '', phaseLog: [] });
+    day = a.date;
+  } else if (form.id === 'f-end') {
+    const a = db.appts.find(x => x.id === id), v = vehicle(a.vehicleId);
+    a.status = 'completed'; a.endedAt = hhmm(); (a.phaseLog ||= []).push({ p: 'end', at: Date.now() }); if (v && f.fuel !== undefined) v.fuel = +f.fuel;
+  } else if (form.id === 'f-renew') {
+    const v = vehicle(form.dataset.vid), k = form.dataset.key;
+    v.docState = v.docState || {};
+    if (form.dataset.mode === 'start') v.docState[k] = { inProcess: true, expected: f.expected || '', note: (f.note || '').trim() };
+    else { v.docs = v.docs || {}; v.docs[k] = f.until; delete v.docState[k]; }
+  } else if (form.id === 'f-driver') {
+    const old = id ? driver(id) : {}, checked = 'idChecked' in f;
+    const rec = { name: f.name.trim(), phone: f.phone.trim(), homeAddress: f.homeAddress.trim(), licenseNumber: f.licenseNumber.trim(), licenseClass: f.licenseClass.trim(), licenseExpiry: f.licenseExpiry, idType: f.idType, idNumber: f.idNumber.trim(), idChecked: checked, idCheckedDate: checked ? (old.idChecked ? old.idCheckedDate : today()) : '', active: 'active' in f };
+    if (id) Object.assign(old, rec); else db.drivers.push({ ...rec, id: uid() });
+  } else if (form.id === 'f-vehicle') {
+    const rec = { name: f.name.trim(), typeId: f.typeId, model: f.model.trim(), plate: f.plate.trim(), seats: +f.seats || 1, capacity: +f.capacity || 0, fuel: +f.fuel, range: +f.range || 1, driverId: f.driverId, maintenance: 'maintenance' in f, docs: Object.fromEntries(DOCS.map(([k]) => [k, f['doc_' + k]])), docState: Object.fromEntries(DOCS.filter(([k]) => 'proc_' + k in f).map(([k]) => [k, { inProcess: true, expected: f['exp_' + k] || '', note: (id && vehicle(id).docState?.[k]?.note) || '' }])) };
+    if (id) Object.assign(vehicle(id), rec); else db.vehicles.push({ ...rec, id: uid() });
+  } else if (form.id === 'f-type') {
+    db.types.push({ id: uid(), name: f.name.trim(), kind: f.kind, seats: +f.seats || 1, capacity: +f.capacity || 1000 }); save(); typesDialog(); render(); return;
+  }
+  save(); close(); render();
+});
+dlg.addEventListener('close', () => { dlg.innerHTML = ''; });
+document.documentElement.lang = lang;
+document.querySelectorAll('[data-lang]').forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
+render();
+</script>
+</body>
+</html>
