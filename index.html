@@ -199,6 +199,20 @@ input:focus,select:focus,textarea:focus{outline:0;box-shadow:0 0 0 3.5px color-m
 .ib.red{color:var(--bad)}
 .lang{position:fixed;top:max(12px,env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));z-index:20;background:var(--glass);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);box-shadow:var(--shadow)}
 .lang button{padding:6px 14px}
+.app[hidden]{display:none}
+#auth{position:fixed;inset:0;z-index:30;background:var(--bg);display:grid;place-items:center;padding:20px;overflow:auto}
+#auth[hidden]{display:none}
+.authbox{width:min(400px,100%);padding:30px 26px}
+.authbox .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:22px;letter-spacing:-.03em;margin-bottom:18px}
+.authbox h1{margin:0 0 4px;font-size:28px;letter-spacing:-.045em}
+.authbox .sub{margin:0 0 18px;color:var(--muted);font-size:14.5px}
+.authbox form input{width:100%;box-sizing:border-box}
+.authbox .alt{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.authbox .alt .btn{flex:1}
+.amsg{font-size:13.5px;color:var(--muted);min-height:1.3em;margin:0 0 12px}
+.amsg.err{color:var(--bad)}
+#sync{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:25;background:color-mix(in srgb,var(--bad) 14%,var(--card));color:var(--bad);padding:6px 14px;border-radius:980px;font-size:13px;font-weight:500;box-shadow:var(--shadow)}
+#sync[hidden]{display:none}
 @media (prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important}}
 @media(max-width:760px){
   .app{grid-template-columns:1fr}
@@ -220,9 +234,11 @@ input:focus,select:focus,textarea:focus{outline:0;box-shadow:0 0 0 3.5px color-m
   <aside><div class="brand"><span class="logo"><svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></span>dbeat</div><nav id="nav"></nav></aside>
   <main id="main"></main>
 </div>
-<div class="seg lang" role="group" aria-label="Language"><button type="button" data-lang="en">English</button><button type="button" data-lang="hi">हिंदी</button></div>
+<div class="seg lang" role="group" aria-label="Language"><button type="button" data-lang="en">English</button><button type="button" data-lang="hi">हिंदी</button><button type="button" data-act="signout" id="signout" hidden>Sign out</button></div>
 <dialog id="dlg"></dialog>
-
+<div id="auth" hidden></div>
+<div id="sync" hidden></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 const KEY = 'dispatch.prototype.v4';
 const $ = (s, e = document) => e.querySelector(s);
@@ -307,9 +323,11 @@ function seed() {
     ].map(a => ({ revenue: true, hireDocs: 'none', phase: '', phaseLog: [], ...a })),
   };
 }
-let db;
-try { db = JSON.parse(localStorage.getItem(KEY)) || seed(); } catch { db = seed(); }
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch {} };
+let db = seed(), cloud = false, companyId = null, saveTimer = 0;
+const save = () => {
+  if (cloud) { clearTimeout(saveTimer); saveTimer = setTimeout(pushCloud, 600); return; }
+  try { localStorage.setItem(KEY, JSON.stringify(db)); } catch {}
+};
 let view = 'schedule', mode = 'fleet', day = iso(new Date()), typeFilter = '', ff = 'all';
 
 const driver = id => db.drivers.find(x => x.id === id);
@@ -848,12 +866,105 @@ function ask(msg, yes, o = {}) {
 }
 const syncKind = (form, kind) => form.querySelectorAll('[data-for]').forEach(l => { l.hidden = l.dataset.for !== kind; });
 
+/* ---- Accounts (Supabase) ---- */
+const SB_URL = 'https://yqjbipvacofrdqhnxocd.supabase.co', SB_KEY = 'sb_publishable_j32TWriFvbplzy3VhWgvLA_32DvboEp';
+const sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null;
+const authEl = $('#auth'), syncEl = $('#sync');
+const blankDb = () => ({ types: seed().types, drivers: [], vehicles: [], appts: [] });
+const setSync = msg => { syncEl.hidden = !msg; syncEl.textContent = msg || ''; };
+async function pushCloud() {
+  clearTimeout(saveTimer); saveTimer = 0;
+  if (!cloud) return;
+  const { error } = await sb.from('fleet_state').update({ data: db, updated_at: new Date().toISOString() }).eq('company_id', companyId);
+  setSync(error ? 'Not saved. Check your internet.' : '');
+}
+function showAuth(m = 'in', msg = '', isErr = false) {
+  $('.app').hidden = true; $('#signout').hidden = true; authEl.hidden = false;
+  const up = m === 'up', co = m === 'company';
+  authEl.innerHTML = `<div class="authbox card"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></span>dbeat</div>
+    <h1>${co ? 'Name your company' : up ? 'Create your account' : 'Sign in'}</h1>
+    <p class="sub">${co ? 'This is the fleet you will manage here.' : up ? 'Free for 30 days. No card needed.' : 'Welcome back.'}</p>
+    <form id="authform" data-m="${m}">
+      ${up || co ? '<label>Company name<input name="company" required maxlength="80" autocomplete="organization"></label>' : ''}
+      ${co ? '' : `<label>Email<input name="email" type="email" required autocomplete="email"></label>
+      <label>Password<input name="password" type="password" required minlength="8" autocomplete="${up ? 'new-password' : 'current-password'}"></label>`}
+      <p class="amsg${isErr ? ' err' : ''}"></p>
+      <button class="btn cta" type="submit">${co ? 'Continue' : up ? 'Create account' : 'Sign in'}</button>
+    </form>
+    <div class="alt">${co ? '' : `<button type="button" class="btn ghost sm" data-a="${up ? 'in' : 'up'}">${up ? 'I have an account' : 'Create a company account'}</button>`}<button type="button" class="btn outline sm" data-a="demo">Try the demo</button></div></div>`;
+  $('.amsg', authEl).textContent = msg;
+}
+function hideAuth() { authEl.hidden = true; authEl.innerHTML = ''; $('.app').hidden = false; $('#signout').hidden = false; }
+function enterDemo() {
+  cloud = false; companyId = null;
+  try { db = JSON.parse(localStorage.getItem(KEY)) || seed(); } catch { db = seed(); }
+  hideAuth(); render();
+}
+async function openCompany() {
+  const { data: m, error: e1 } = await sb.from('members').select('company_id').limit(1);
+  if (e1) return showAuth('in', 'Could not reach the server. Try again.', true);
+  if (!m.length) {
+    let name = ''; try { name = localStorage.getItem('dbeat.company') || ''; } catch {}
+    if (!name) return showAuth('company');
+    const { error } = await sb.rpc('create_company', { company_name: name });
+    if (error) return showAuth('company', 'Could not create the company. Try again.', true);
+    try { localStorage.removeItem('dbeat.company'); } catch {}
+    return openCompany();
+  }
+  companyId = m[0].company_id;
+  const { data: f, error } = await sb.from('fleet_state').select('data').eq('company_id', companyId).single();
+  if (error) return showAuth('in', 'Could not load your data. Try again.', true);
+  const fresh = !(f.data && f.data.vehicles);
+  db = fresh ? blankDb() : f.data; cloud = true;
+  if (fresh) save();
+  hideAuth(); render();
+}
+async function signOut() {
+  if (cloud && saveTimer) await pushCloud();
+  cloud = false; companyId = null; db = seed(); setSync('');
+  if (sb) await sb.auth.signOut();
+  showAuth('in');
+}
+authEl.addEventListener('submit', async e => {
+  e.preventDefault(); e.stopPropagation();
+  const form = e.target, m = form.dataset.m, f = Object.fromEntries(new FormData(form)), btn = $('button[type=submit]', form), msg = $('.amsg', form);
+  btn.disabled = true; msg.className = 'amsg'; msg.textContent = '';
+  const fail = t => { msg.className = 'amsg err'; msg.textContent = t; btn.disabled = false; };
+  try {
+    if (m === 'company') {
+      try { localStorage.setItem('dbeat.company', f.company.trim()); } catch {}
+      return openCompany();
+    }
+    if (m === 'up') {
+      try { localStorage.setItem('dbeat.company', f.company.trim()); } catch {}
+      const { data, error } = await sb.auth.signUp({ email: f.email.trim(), password: f.password, options: { emailRedirectTo: location.origin } });
+      if (error) return fail(error.message);
+      if (data.session) { track('account_created'); return openCompany(); }
+      msg.textContent = 'Check your email. Open the link we sent, then sign in here.'; btn.disabled = false; return;
+    }
+    const { error } = await sb.auth.signInWithPassword({ email: f.email.trim(), password: f.password });
+    if (error) return fail(error.message);
+    track('signed_in'); openCompany();
+  } catch { fail('Something went wrong. Check your internet and try again.'); }
+});
+authEl.addEventListener('click', e => {
+  const b = e.target.closest('[data-a]'); if (!b) return;
+  e.stopPropagation();
+  if (b.dataset.a === 'demo') { track('demo_opened'); enterDemo(); } else showAuth(b.dataset.a);
+});
+async function init() {
+  if (!sb) return enterDemo();
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) openCompany(); else showAuth('in');
+}
+
 /* ---- Events ---- */
 document.addEventListener('click', e => {
   const t = e.target.closest('button,[data-open],[data-driver],[data-vehicle],[data-slot]'); if (!t) return;
   const d = t.dataset;
   if ('yes' in d) { const f = pending; pending = null; close(); if (f) f(); }
   else if (d.lang) setLang(d.lang);
+  else if (d.act === 'signout') signOut();
   else if (d.go) { track('screen_' + d.go); view = d.go; render(); }
   else if (d.mode) { track('view_' + d.mode); mode = d.mode; render(); }
   else if (d.ff) { track('filter_' + d.ff); ff = d.ff; render(); }
@@ -944,7 +1055,7 @@ dlg.addEventListener('submit', e => {
 dlg.addEventListener('close', () => { dlg.innerHTML = ''; });
 document.documentElement.lang = lang;
 document.querySelectorAll('[data-lang]').forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
-render();
+init();
 </script>
 </body>
 </html>
