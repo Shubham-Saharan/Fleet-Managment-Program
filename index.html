@@ -211,6 +211,9 @@ input:focus,select:focus,textarea:focus{outline:0;box-shadow:0 0 0 3.5px color-m
   h1{font-size:30px}
 }
 </style>
+<script type="text/javascript">
+(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","z7uuttfv2d");
+</script>
 </head>
 <body>
 <div class="app">
@@ -223,6 +226,8 @@ input:focus,select:focus,textarea:focus{outline:0;box-shadow:0 0 0 3.5px color-m
 <script>
 const KEY = 'dispatch.prototype.v4';
 const $ = (s, e = document) => e.querySelector(s);
+/* Usage events for analytics (Microsoft Clarity). Does nothing when Clarity is not loaded. */
+const track = (name) => { try { if (window.clarity) window.clarity('event', name); } catch {} };
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid = () => Math.random().toString(36).slice(2, 9);
 const iso = d => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
@@ -557,7 +562,7 @@ function hiNode(root) {
 function setLang(l) {
   lang = l === 'hi' ? 'hi' : 'en';
   try { localStorage.setItem('dbeat.lang', lang); } catch {}
-  document.documentElement.lang = lang;
+  document.documentElement.lang = lang; track('language_' + lang); try { if (window.clarity) window.clarity('set', 'language', lang); } catch {}
   document.querySelectorAll('[data-lang]').forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
   close(); render();
 }
@@ -849,17 +854,17 @@ document.addEventListener('click', e => {
   const d = t.dataset;
   if ('yes' in d) { const f = pending; pending = null; close(); if (f) f(); }
   else if (d.lang) setLang(d.lang);
-  else if (d.go) { view = d.go; render(); }
-  else if (d.mode) { mode = d.mode; render(); }
-  else if (d.ff) { ff = d.ff; render(); }
+  else if (d.go) { track('screen_' + d.go); view = d.go; render(); }
+  else if (d.mode) { track('view_' + d.mode); mode = d.mode; render(); }
+  else if (d.ff) { track('filter_' + d.ff); ff = d.ff; render(); }
   else if (d.setday) { day = d.setday; render(); }
   else if (d.type !== undefined) { typeFilter = d.type; render(); }
   else if (d.day !== undefined) { day = d.day === '0' ? today() : addDays(day, +d.day); render(); }
   else if (d.kind) { const f = $('#f-trip'); f.elements.kind.value = d.kind; $('#kindseg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b === t)); syncKind(f, d.kind); delete f.dataset.ack; refreshTrip(); }
-  else if ('newTrip' in d) tripForm(blank());
+  else if ('newTrip' in d) { track('new_trip_opened'); tripForm(blank()); }
   else if (d.open) tripDetail(d.open);
-  else if (d.vehicle) vehicleDetail(d.vehicle);
-  else if (d.driver) driverDetail(d.driver);
+  else if (d.vehicle) { track('vehicle_opened'); vehicleDetail(d.vehicle); }
+  else if (d.driver) { track('driver_opened'); driverDetail(d.driver); }
   else if (d.edit) tripForm(db.appts.find(x => x.id === d.edit));
   else if (d.copy) tripForm({ ...db.appts.find(x => x.id === d.copy), id: '', status: 'scheduled', endedAt: '', phase: '', phaseLog: [] });
   else if (d.pick !== undefined) {
@@ -870,12 +875,12 @@ document.addEventListener('click', e => {
   else if (d.set === 'complete') endDialog(d.id);
   else if (d.set === 'dispatch') {
     const a = db.appts.find(x => x.id === d.id);
-    const go = () => { a.status = 'dispatched'; a.phase = a.revenue === false ? 'empty' : 'pickup'; a.phaseLog = [{ p: a.phase, at: Date.now() }]; save(); close(); render(); };
+    const go = () => { track('trip_started'); a.status = 'dispatched'; a.phase = a.revenue === false ? 'empty' : 'pickup'; a.phaseLog = [{ p: a.phase, at: Date.now() }]; save(); close(); render(); };
     if (a.hireDocs === 'waiting') ask('The hire contract is not signed yet. Start the trip anyway?', go, { label: 'Start anyway', cls: 'ghost', no: 'Not yet' }); else go();
   }
   else if (d.set === 'cancel') { db.appts.find(x => x.id === d.id).status = 'cancelled'; save(); close(); render(); }
-  else if (d.phase) { const a = db.appts.find(x => x.id === d.id); a.phase = d.phase; (a.phaseLog ||= []).push({ p: d.phase, at: Date.now() }); save(); close(); render(); }
-  else if (d.hireOk) { db.appts.find(x => x.id === d.hireOk).hireDocs = 'received'; save(); close(); render(); }
+  else if (d.phase) { track('trip_' + d.phase); const a = db.appts.find(x => x.id === d.id); a.phase = d.phase; (a.phaseLog ||= []).push({ p: d.phase, at: Date.now() }); save(); close(); render(); }
+  else if (d.hireOk) { track('contract_signed'); db.appts.find(x => x.id === d.hireOk).hireDocs = 'received'; save(); close(); render(); }
   else if (d.renewStart) renewDialog(...d.renewStart.split('|'), 'start');
   else if (d.renewDone) renewDialog(...d.renewDone.split('|'), 'done');
   else if (d.del) { ask('Delete this trip?', () => { db.appts = db.appts.filter(x => x.id !== d.del); save(); close(); render(); }); }
@@ -915,10 +920,10 @@ dlg.addEventListener('submit', e => {
     const p = problems(a);
     if (p.length && !form.dataset.ack) { $('#warn').innerHTML = `<div class="warn"><b>Check this:</b><br>${p.map(esc).join('<br>')}<br><br>Press Save again to continue anyway.</div>`; form.dataset.ack = '1'; $('#warn').scrollIntoView({ block: 'nearest' }); return; }
     if (id) Object.assign(db.appts.find(x => x.id === id), a); else db.appts.push({ ...a, id: uid(), status: 'scheduled', phase: '', phaseLog: [] });
-    day = a.date;
+    day = a.date; track('trip_saved');
   } else if (form.id === 'f-end') {
     const a = db.appts.find(x => x.id === id), v = vehicle(a.vehicleId);
-    a.status = 'completed'; a.endedAt = hhmm(); (a.phaseLog ||= []).push({ p: 'end', at: Date.now() }); if (v && f.fuel !== undefined) v.fuel = +f.fuel;
+    track('trip_ended'); a.status = 'completed'; a.endedAt = hhmm(); (a.phaseLog ||= []).push({ p: 'end', at: Date.now() }); if (v && f.fuel !== undefined) v.fuel = +f.fuel;
   } else if (form.id === 'f-renew') {
     const v = vehicle(form.dataset.vid), k = form.dataset.key;
     v.docState = v.docState || {};
