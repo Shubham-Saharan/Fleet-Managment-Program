@@ -1,0 +1,31 @@
+# dbeat
+
+> dbeat is a fleet and dispatch scheduling web app for transport companies in India. It shows each vehicle with its fuel, documents, driver and live trip state, and separates trips that earn money from empty runs (dead miles). It works in English and Hindi.
+
+dbeat is an early-stage product. Each company signs up with its own account and sees only its own vehicles, drivers and trips. A demo with sample data is available without an account.
+
+## What it does
+
+- Fleet view: every vehicle with fuel level, vehicle documents (insurance, registration, inspection), driver nickname and current trip state.
+- Earning vs empty run: each trip is marked as paid work or an empty run, with the time spent in each phase (pickup, loaded, return, empty).
+- Hire contracts: tracks whether the logistics company's hire papers for a trip are waiting or received.
+- Vehicle types: people carriers (seats) and cargo trucks (load capacity).
+- Drivers: licence, ID and home address records, with an ID-checked status.
+- Language: English and Hindi, switchable on any screen.
+
+## Who it is for
+
+Small and mid-size fleet owners and dispatchers running cargo trucks, vans, cars and minibuses.
+
+## Pages
+
+- [App and sign-in](https://dbeat.co.in/): sign up for a company account, sign in, or open the demo.
+
+## Not yet available
+
+- Live GPS and telematics data (planned).
+- Online payments and paid plans (planned; new accounts start with a free 30-day trial).
+
+## Contact
+
+Website: https://dbeat.co.in
