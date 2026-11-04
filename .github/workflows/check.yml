@@ -1,0 +1,36 @@
+name: Check
+
+# Runs on every push and pull request. Vercel then deploys:
+#   branch "main"    -> https://dbeat.co.in          (customers)
+#   branch "staging" -> https://staging.dbeat.co.in  (testing)
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: App script has no syntax errors
+        run: |
+          node -e "
+          const h = require('fs').readFileSync('index.html', 'utf8');
+          const scripts = [...h.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
+          if (!scripts.length) { console.error('no inline script found'); process.exit(1); }
+          require('fs').writeFileSync('/tmp/app.js', scripts[scripts.length - 1]);
+          "
+          node --check /tmp/app.js
+      - name: Required files exist
+        run: |
+          for f in index.html robots.txt llms.txt sitemap.xml supabase/schema.sql; do
+            test -s "$f" || { echo "missing or empty: $f"; exit 1; }
+          done
+      - name: No secret keys in the code
+        run: |
+          if grep -rEn "service_role|sb_secret_|eyJhbGciOi[A-Za-z0-9_-]{20,}" index.html supabase; then
+            echo "A secret key looks to be in the code. Remove it."; exit 1
+          fi
