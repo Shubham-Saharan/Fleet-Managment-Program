@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap">
 <script>try{var t=localStorage.getItem("dbeat.theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -226,90 +228,113 @@ input:focus,select:focus,textarea:focus{outline:0;box-shadow:0 0 0 3.5px color-m
 #sync[hidden]{display:none}
 #envbadge{position:fixed;left:50%;transform:translateX(-50%);top:8px;z-index:40;background:var(--soon);color:#000;padding:4px 12px;border-radius:980px;font-size:12px;font-weight:700;letter-spacing:.02em;pointer-events:none}
 
-/* splash */
-#splash{position:fixed;inset:0;z-index:50;background:radial-gradient(60% 50% at 50% 40%,color-mix(in srgb,var(--accent) 16%,var(--bg)),var(--bg));display:grid;place-items:center;overflow:hidden;transition:opacity .5s var(--ease),transform .5s var(--ease)}
+/* splash and landing, from the dbeat landing design */
+#landing,#splash{font-family:"DM Sans","Noto Sans Devanagari",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.dl-h,.dl-h2{font-family:Syne,"Noto Sans Devanagari",sans-serif}
+body.lp .lang{display:none}
+#splash{position:fixed;inset:0;z-index:50;background:#0f1008;color:#fff;overflow:hidden;cursor:pointer;transition:opacity .5s ease}
 #splash[hidden]{display:none}
-#splash.out{opacity:0;transform:scale(1.03);pointer-events:none}
-.sp-stack{display:grid;justify-items:center;gap:8px;width:100%}
-.sp-mark{width:76px;height:76px;border-radius:22px;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 78%,#fff),var(--accent));display:grid;place-items:center;color:#fff;box-shadow:0 18px 50px color-mix(in srgb,var(--accent) 45%,transparent);animation:spMark .8s cubic-bezier(.2,1.3,.4,1) both}
-.sp-mark svg{width:38px;height:38px;stroke-width:2.2}
-.sp-word{font-size:46px;font-weight:700;letter-spacing:-.05em;line-height:1.1;animation:spUp .7s .45s var(--ease) both}
-.sp-roadwrap{position:relative;width:480px;height:110px;margin-top:4px}
-.sp-roadwrap svg{position:absolute;inset:0;width:480px;height:110px;overflow:visible}
-.sp-base{stroke:var(--line);stroke-width:3;stroke-linecap:round;stroke-dasharray:1 9;fill:none}
-.sp-line{fill:none;stroke:var(--accent);stroke-width:3.5;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:spDraw 1.8s .8s cubic-bezier(.5,0,.2,1) forwards}
-.sp-dot{position:absolute;left:0;top:0;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px var(--accent),0 6px 16px color-mix(in srgb,var(--accent) 50%,transparent);offset-path:path("M20 80 C 140 80, 180 20, 300 40 S 420 70, 460 30");offset-rotate:0deg;animation:spTravel 1.8s .8s cubic-bezier(.5,0,.2,1) both}
-.sp-pin{transform-box:fill-box;transform-origin:center;fill:var(--accent);animation:spPin .5s 2.45s cubic-bezier(.2,1.4,.4,1) both}
-.sp-tag{margin:0;font-size:20px;font-weight:600;letter-spacing:-.02em;animation:spUp .7s 1.6s var(--ease) both}
-.sp-sub{margin:0;font-size:14.5px;color:var(--muted);animation:spUp .7s 1.85s var(--ease) both}
-.sp-bar{position:absolute;left:0;bottom:0;height:3px;background:var(--accent);animation:spBar 3s linear both}
-.sp-skip{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:max(18px,env(safe-area-inset-bottom,0px));border:0;background:var(--fill);color:var(--muted);padding:7px 16px;border-radius:980px;font-size:13.5px;font-weight:500;cursor:pointer;animation:spUp .5s 1s var(--ease) both}
-@keyframes spMark{from{opacity:0;transform:scale(.55) translateY(8px)}to{opacity:1;transform:none}}
-@keyframes spUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-@keyframes spDraw{to{stroke-dashoffset:0}}
-@keyframes spTravel{0%{offset-distance:0%;opacity:0}8%{opacity:1}100%{offset-distance:100%;opacity:1}}
-@keyframes spPin{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
-@keyframes spBar{from{width:0}to{width:100%}}
-@media (max-width:520px){.sp-roadwrap{transform:scale(.68);margin:-14px 0}.sp-word{font-size:40px}}
-@media (prefers-reduced-motion:reduce){#splash *{animation-duration:.01ms!important;animation-delay:0s!important}}
-/* landing */
-#landing{min-height:100vh;background:var(--bg);color:var(--text)}
+#splash.out{opacity:0;pointer-events:none}
+.sp-top{position:absolute;left:clamp(20px,4vw,48px);right:clamp(20px,4vw,48px);top:28px;display:flex;justify-content:space-between;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.sp-pct{font-feature-settings:"tnum" 1}
+.sp-col{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center}
+.sp-mark{display:flex;align-items:center;justify-content:center;gap:.12em;text-align:center;font-family:Syne,sans-serif;font-weight:600;font-size:clamp(72px,16vw,200px);line-height:1;letter-spacing:-.03em}
+.sp-mark i{display:inline-block;width:.16em;height:.16em;border-radius:50%;background:#3f9a4a;margin-top:.08em}
+.sp-band{position:relative;height:150px;margin-top:20px}
+.sp-band .ecg{position:absolute;left:0;bottom:0;display:block;overflow:visible;width:100%;height:60px}
+.sp-truck{position:absolute;bottom:26px;left:0;display:block;width:160px;height:73px;stroke-width:1.5}
+.sp-wheel{transform-box:fill-box;transform-origin:center}
+.sp-pitch{text-align:center;margin-top:36px;padding:0 24px;opacity:0}
+.sp-pitch b{display:block;font-family:Syne,sans-serif;font-weight:500;font-size:clamp(20px,2.4vw,30px);line-height:1.2;letter-spacing:-.01em}
+.sp-pitch span{display:block;font-size:15px;line-height:24px;color:rgba(255,255,255,.7);margin-top:12px}
+.sp-skip{position:absolute;left:0;right:0;bottom:calc(36px + env(safe-area-inset-bottom,0px));margin:auto;width:max-content;white-space:nowrap;background:rgba(255,255,255,.12);color:#fff;border:0;border-radius:999px;padding:12px 24px;font:500 14px "DM Sans",sans-serif;min-height:44px;cursor:pointer}
+@media (max-width:700px){.sp-mark{font-size:min(27vw,120px)}}
+#landing{min-height:100vh;background:#e2e1dd;padding:0 clamp(0px,2vw,28px);box-sizing:border-box;color:#0f1008}
 #landing[hidden]{display:none}
-.ln-wrap{max-width:1080px;margin:0 auto;padding:0 20px}
-.ln-top{position:sticky;top:0;z-index:15;background:var(--glass);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-bottom:.5px solid var(--line)}
-.ln-top .ln-wrap{display:flex;align-items:center;justify-content:space-between;height:60px;padding-right:200px}
-.ln-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;letter-spacing:-.03em}
-.ln-brand .logo{width:30px;height:30px;border-radius:9px;background:var(--accent);color:#fff;display:grid;place-items:center}
-.ln-brand .logo svg{width:17px;height:17px;stroke-width:2.4}
-.ln-top .acts{display:flex;gap:8px}
-.ln-hero{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding:72px 0 56px}
-.ln-hero h1{margin:0 0 18px;font-size:clamp(36px,5.4vw,60px);line-height:1.04;letter-spacing:-.05em}
-.ln-hero p.lead{margin:0 0 26px;font-size:18px;line-height:1.5;color:var(--muted);max-width:30em}
-.ln-cta{display:flex;gap:10px;flex-wrap:wrap}
-.ln-cta .btn{padding:14px 24px;font-size:16.5px;border-radius:980px}
-.ln-note{margin:14px 0 0;font-size:14px;color:var(--muted)}
-.ln-mock{padding:18px;border-radius:26px;max-width:440px;justify-self:end;width:100%;box-shadow:0 0 0 .5px var(--line),0 30px 70px rgba(20,30,70,.18)}
-.mk-head{display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:15px;margin:2px 2px 12px}
-.mk-head span{font-size:12px;font-weight:500;color:var(--muted);background:var(--fill);padding:3px 10px;border-radius:980px}
-.mk-row{background:var(--fill);border-radius:18px;padding:13px 14px;margin-bottom:10px}
+#landing a{color:#0f1008}#landing a:hover{color:#3f8f4a}
+.dl-page{background:#fff}
+.dl-hdr{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:22px 40px;font-size:13px}
+.dl-nav{display:flex;gap:28px;white-space:nowrap}.dl-nav a{text-decoration:none}
+.dl-logo{font-family:Syne,sans-serif;font-weight:600;font-size:20px;display:flex;align-items:center;gap:8px}
+.dl-logo i{width:12px;height:12px;border-radius:50%;background:#0f1008;display:inline-block}
+.dl-right{display:flex;gap:16px;justify-content:flex-end;align-items:center;white-space:nowrap}
+.dl-lang button{border:0;background:none;padding:6px 4px;font:500 13px "DM Sans","Noto Sans Devanagari",sans-serif;color:#6b6b64;cursor:pointer}
+.dl-lang button.on{color:#0f1008;text-decoration:underline;text-underline-offset:4px}
+.dl-btn{white-space:nowrap;background:#0f1008;color:#fff;border:0;border-radius:999px;padding:12px 22px;font:500 14px "DM Sans","Noto Sans Devanagari",sans-serif;cursor:pointer;min-height:44px}
+.dl-btn:hover{background:#262719}
+.dl-btn.sm{padding:9px 16px;font-size:12px;min-height:0}
+.dl-btn.grey{background:#f0efec;color:#0f1008}.dl-btn.grey:hover{background:#e6e5e1}
+.dl-btn.white{background:#fff;color:#0f1008}.dl-btn.white:hover{background:#ecebe7}
+.dl-btn.ghost{background:rgba(255,255,255,.1);color:#fff}.dl-btn.ghost:hover{background:rgba(255,255,255,.18)}
+.dl-hero{text-align:center;padding:84px 24px 56px}
+.dl-hero h1{font-family:Syne,"Noto Sans Devanagari",sans-serif;font-weight:600;font-size:clamp(40px,6vw,68px);line-height:1.03;letter-spacing:-.02em;margin:0 auto;max-width:11em}
+.dl-hero p.lead{font-size:15px;line-height:24px;color:#4d4d48;max-width:36ch;margin:24px auto 0}
+.dl-btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:28px}
+.dl-note{font-size:12px;color:#6b6b64;margin:14px 0 0}
+.dl-band{height:clamp(300px,38vw,460px);position:relative;background:linear-gradient(180deg,#f3ebdd 0%,#e4d6bd 55%,#d6c6a8 100%);display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box}
+.dl-mock{width:min(440px,100%);background:#fff;border-radius:14px;box-shadow:0 18px 50px rgba(15,16,8,.18);padding:16px;text-align:left;box-sizing:border-box}
+.mk-head{display:flex;justify-content:space-between;align-items:center;font-family:Syne,"Noto Sans Devanagari",sans-serif;font-weight:600;font-size:15px;margin:2px 2px 12px}
+.mk-head span{font:500 11px "DM Sans","Noto Sans Devanagari",sans-serif;color:#6b6b64;background:#f0efec;padding:3px 9px;border-radius:6px}
+.mk-row{background:#f4f4f2;border-radius:10px;padding:12px 13px;margin-bottom:8px}
+.mk-row:last-child{margin-bottom:0}
 .mk-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.mk-top b{display:block;font-size:15px}.mk-top small{color:var(--muted);font-size:12.5px}
-.mk-pill{font-size:12px;font-weight:600;padding:4px 10px;border-radius:980px;background:color-mix(in srgb,var(--c) 15%,transparent);color:var(--c);white-space:nowrap}
-.mk-fuel{height:6px;border-radius:6px;background:var(--line);margin-top:11px;overflow:hidden}
-.mk-fuel i{display:block;height:100%;border-radius:6px;background:var(--c)}
-.ln-sec{padding:56px 0}
-.ln-sec h2{margin:0 0 8px;font-size:clamp(28px,3.6vw,40px);letter-spacing:-.04em;line-height:1.1}
-.ln-sec .sub{margin:0 0 30px;color:var(--muted);font-size:17px}
-.ln-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.ln-card{padding:24px 22px;border-radius:24px}
-.ln-card .ic{width:44px;height:44px;border-radius:14px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;margin-bottom:16px}
-.ln-card .ic svg{width:22px;height:22px}
-.ln-card h3{margin:0 0 6px;font-size:18px;letter-spacing:-.02em}
-.ln-card p{margin:0;color:var(--muted);font-size:15px;line-height:1.5}
-.ln-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:s}
-.ln-step{padding:24px 22px;border-radius:24px;position:relative}
-.ln-step::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;margin-bottom:14px}
-.ln-step h3{margin:0 0 6px;font-size:18px;letter-spacing:-.02em}
-.ln-step p{margin:0;color:var(--muted);font-size:15px;line-height:1.5}
-.ln-next{display:flex;gap:14px;align-items:center;padding:20px 22px;border-radius:24px}
-.ln-next .tag{flex:none;font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:5px 12px;border-radius:980px}
-.ln-next p{margin:0;color:var(--muted)}
-.ln-final{text-align:center;padding:64px 20px;border-radius:32px;background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 14%,var(--card)),var(--card))}
-.ln-final h2{margin:0 0 8px}.ln-final p{margin:0 0 24px;color:var(--muted);font-size:17px}
-.ln-final .ln-cta{justify-content:center}
-.ln-foot{padding:36px 0 56px;color:var(--muted);font-size:13.5px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.ln-foot a{color:var(--muted)}
-#landing.pre .rv{opacity:0;transform:translateY(16px)}
-.rv{transition:opacity .8s var(--ease),transform .8s var(--ease);transition-delay:var(--d,0s)}
-#landing.anim .sec:not(.in){opacity:0;transform:translateY(22px)}
-.sec{transition:opacity .8s var(--ease),transform .8s var(--ease)}
-@media (max-width:860px){
-  .ln-hero{grid-template-columns:1fr;gap:32px;padding:40px 0 32px}.ln-mock{justify-self:stretch;max-width:none}
-  .ln-grid,.ln-steps{grid-template-columns:1fr}
-  .ln-top .ln-wrap{padding-right:176px}.ln-top .acts .hide-s{display:none}
-  .ln-sec{padding:36px 0}
+.mk-top b{display:block;font-size:14px;font-weight:600}.mk-top small{color:#6b6b64;font-size:12px}
+.mk-pill{font-size:11px;font-weight:600;padding:4px 9px;border-radius:6px;background:color-mix(in srgb,var(--c) 14%,#fff);color:var(--c);white-space:nowrap}
+.mk-fuel{height:5px;border-radius:5px;background:#e6e5e1;margin-top:10px;overflow:hidden}
+.mk-fuel i{display:block;height:100%;border-radius:5px;background:var(--c)}
+.dl-sec{padding:88px 0;text-align:center}
+.dl-tint{background:#f4f4f2}
+.dl-sec h2,.dl-h2{font-family:Syne,"Noto Sans Devanagari",sans-serif;font-weight:600;font-size:36px;line-height:38px;letter-spacing:-.02em;margin:0}
+.dl-sec .sub{font-size:14px;color:#55554f;margin:14px 0 40px}
+.dl-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,260px));gap:16px;justify-content:center;padding:0 24px}
+.dl-card{background:#fff;border-radius:14px;box-shadow:0 6px 24px rgba(15,16,8,.06);padding:18px;text-align:left;min-height:172px;display:flex;flex-direction:column;justify-content:space-between;gap:18px;box-sizing:border-box}
+.dl-chip{align-self:flex-start;background:#f0efec;border-radius:6px;padding:3px 8px;font-size:11px}
+.dl-card .big{font-family:Syne,"Noto Sans Devanagari",sans-serif;font-weight:600;font-size:28px;line-height:32px}
+.dl-card .lab{font-family:Syne,"Noto Sans Devanagari",sans-serif;font-weight:500;font-size:15px;margin-top:2px}
+.dl-card .note{font-size:12px;line-height:17px;color:#6b6b64;margin-top:6px}
+.dl-state{display:flex;justify-content:center}
+.dl-text{position:relative;width:min(420px,calc(100% - 48px));font-size:16px;line-height:30px;text-align:left}
+.dl-text mark{background:#0f1008;color:#fff;padding:2px 3px}
+.dl-text u{text-decoration-thickness:1px;text-underline-offset:3px}
+.dl-kw{cursor:pointer}.dl-kw:focus-visible{outline:2px solid #3f9a4a;outline-offset:2px}
+.dl-pop{display:none;position:absolute;left:24px;top:46px;z-index:2;width:200px;background:#fff;border-radius:10px;box-shadow:0 10px 32px rgba(15,16,8,.18);padding:8px;font-size:11px;line-height:16px}
+.dl-kw:hover .dl-pop,.dl-kw:focus-within .dl-pop{display:block}
+.dl-pop .pic{display:flex;height:64px;border-radius:6px;background:linear-gradient(180deg,#e9e0cf,#c9bba0);padding:8px;box-sizing:border-box;display:flex;align-items:flex-end}
+.dl-pop .pic span{background:#fff;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:600}
+.dl-pop .t{display:block;margin:8px 2px 4px}.dl-pop button{all:unset;display:block;cursor:pointer;margin:0 2px 2px;font-weight:600}
+.dl-step{justify-content:flex-start;gap:14px}
+.dl-two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),340px));gap:64px;justify-content:center;padding:88px 24px;align-items:center;text-align:left}
+.dl-two h2{margin-bottom:32px}
+.dl-items{display:flex;flex-direction:column;gap:22px}
+.dl-item b{font-family:Syne,"Noto Sans Devanagari",sans-serif;font-weight:500;font-size:14px;display:flex;gap:8px;align-items:center}
+.dl-item b::before{content:"";width:12px;height:12px;border:1.5px solid #0f1008;border-radius:3px;display:inline-block;flex:none}
+.dl-item p{font-size:12px;line-height:18px;color:#55554f;margin:6px 0 0 20px}
+.dl-art{min-height:440px;border-radius:14px;background:linear-gradient(180deg,#ecebe7,#d9d4c6);display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}
+.dl-faq{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,380px));gap:48px 90px;justify-content:center;padding:88px 24px 72px;align-items:start;text-align:left}
+.dl-faq .help{font-size:12px;line-height:18px;color:#55554f;margin:48px 0 0}
+.dl-qs{display:flex;flex-direction:column;gap:14px}
+.dl-q button{all:unset;cursor:pointer;display:flex;gap:12px;font-family:Syne,"Noto Sans Devanagari",sans-serif;font-weight:500;font-size:13.5px;line-height:19px;width:100%}
+.dl-q button:focus-visible{outline:2px solid #3f9a4a;outline-offset:3px}
+.dl-q .sg{width:12px;text-align:center;flex:none}
+.dl-q .a{display:none;font-size:12px;line-height:18px;color:#55554f;margin:8px 0 0 24px}
+.dl-q.open .a{display:block}
+.dl-cta{padding:0 0 72px;display:flex;justify-content:center}
+.dl-cta>div{width:calc(100% - 48px);max-width:760px;background:#0f1008;color:#fff;border-radius:14px;padding:36px 32px;box-sizing:border-box;text-align:left}
+.dl-cta b{display:block;font-family:Syne,"Noto Sans Devanagari",sans-serif;font-weight:500;font-size:26px;line-height:32px;max-width:20em}
+.dl-cta .dl-btns{justify-content:flex-start;margin-top:22px}
+.dl-foot{padding:0 40px 28px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:40px;font-size:11px;line-height:18px;color:#3a3a35;max-width:760px;margin:0 auto;box-sizing:border-box}
+.dl-foot .lg{font-family:Syne,sans-serif;font-weight:600;font-size:14px;color:#0f1008}
+.dl-foot .cols{display:flex;flex-wrap:wrap;gap:24px 40px}
+.dl-foot .cols div{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.dl-foot .cols span{color:#0f1008;font-weight:600}
+.dl-foot button.lk{all:unset;cursor:pointer;color:#3a3a35}.dl-foot button.lk:hover{color:#3f8f4a}
+.dl-copy{text-align:center;font-size:10px;color:#8a8a83;padding:0 0 16px}
+@media (max-width:700px){
+  .dl-hdr{grid-template-columns:auto 1fr;padding:16px 18px}.dl-nav{display:none}.dl-logo{grid-column:1}
+  .dl-hero{padding:48px 20px 36px}.dl-sec{padding:56px 0}.dl-two{padding:56px 24px}.dl-faq{padding:56px 24px 48px}.dl-art{min-height:300px}
+  .dl-right .dl-btn.sm{padding:8px 12px}
 }
-@media (prefers-reduced-motion:reduce){.rv,.sec{transition:none}#landing.pre .rv,#landing.anim .sec:not(.in){opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#splash{transition:none}}
 @media (prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important}}
 @media(max-width:760px){
   .app{grid-template-columns:1fr}
@@ -683,7 +708,7 @@ function setLang(l) {
   document.documentElement.lang = lang; track('language_' + lang); try { if (window.clarity) window.clarity('set', 'language', lang); } catch {}
   document.querySelectorAll('[data-lang]').forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
   close(); render();
-  if (landing && !landing.hidden) { const pre = landing.classList.contains('pre'); showLanding(); if (pre) landing.classList.add('pre'); } else if (authEl && !authEl.hidden) showAuth(authMode);
+  if (landing && !landing.hidden) { const y = scrollY; showLanding(); scrollTo(0, y); } else if (authEl && !authEl.hidden) showAuth(authMode);
 }
 new MutationObserver(ms => { if (lang === 'hi') ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1 || n.nodeType === 3) hiNode(n); })); }).observe(document.body, { childList: true, subtree: true });
 
@@ -1000,7 +1025,7 @@ async function pushCloud() {
 }
 let authMode = 'in';
 function showAuth(m = 'in', msg = '', isErr = false) {
-  authMode = m; landing.hidden = true; $('.app').hidden = true; $('#signout').hidden = true; authEl.hidden = false;
+  authMode = m; lp(false); landing.hidden = true; $('.app').hidden = true; $('#signout').hidden = true; authEl.hidden = false;
   const up = m === 'up', co = m === 'company';
   authEl.innerHTML = `<div class="authbox card"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></span>dbeat</div>
     <h1>${co ? 'Name your company' : up ? 'Create your account' : 'Sign in'}</h1>
@@ -1017,7 +1042,7 @@ function showAuth(m = 'in', msg = '', isErr = false) {
     <p class="legal"><button type="button" class="linkbtn" data-a="home">Back to home</button> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></p></div>`;
   $('.amsg', authEl).textContent = msg;
 }
-function hideAuth() { landing.hidden = true; authEl.hidden = true; authEl.innerHTML = ''; $('.app').hidden = false; $('#signout').hidden = false; }
+function hideAuth() { lp(false); landing.hidden = true; authEl.hidden = true; authEl.innerHTML = ''; $('.app').hidden = false; $('#signout').hidden = false; }
 function enterDemo() {
   cloud = false; companyId = null;
   try { db = JSON.parse(localStorage.getItem(KEY)) || seed(); } catch { db = seed(); }
@@ -1084,117 +1109,146 @@ const onAction = e => {
 };
 authEl.addEventListener('click', onAction);
 landing.addEventListener('click', onAction);
-/* ---- Splash and landing page ---- */
+/* ---- Splash and landing page (from the dbeat landing design) ---- */
 Object.assign(HI, {
   'Sign in': 'साइन इन', 'Start free trial': 'मुफ़्त ट्रायल शुरू करें', 'Try the demo': 'डेमो देखें', 'Back to home': 'होम पर वापस',
-  'See every vehicle. Know which ones earn.': 'हर गाड़ी देखें। जानें कौन सी कमाई कर रही है।',
-  'dbeat shows your whole fleet on one screen: fuel, papers, driver and trip. It separates trips that earn money from empty runs, so you can see how much time each vehicle spends running empty.': 'dbeat आपकी पूरी गाड़ियाँ एक स्क्रीन पर दिखाता है: ईंधन, कागज़ात, ड्राइवर और ट्रिप। यह कमाई वाली ट्रिप और खाली सफ़र को अलग करता है, ताकि आप देख सकें कि हर गाड़ी कितना समय खाली चलती है।',
-  'Free for 30 days. No card needed.': '30 दिन मुफ़्त। कार्ड की ज़रूरत नहीं।', 'Works in English and Hindi.': 'अंग्रेज़ी और हिंदी में चलता है।', 'Sample data': 'नमूना डेटा', 'Parked': 'खड़ी',
-  'What dbeat does': 'dbeat क्या करता है', 'The things a fleet owner checks every day, in one place.': 'वो सब कुछ जो फ़्लीट मालिक रोज़ देखता है, एक ही जगह।',
-  'Every vehicle at a glance': 'हर गाड़ी एक नज़र में', 'Fuel, papers, driver and current trip, together on one card for each vehicle.': 'ईंधन, कागज़ात, ड्राइवर और चल रही ट्रिप, हर गाड़ी के लिए एक ही कार्ड पर।',
-  'Earning or empty run': 'कमाई या खाली सफ़र', 'Each trip is marked as paid work or an empty run, with the time spent in each stage.': 'हर ट्रिप कमाई वाली या खाली सफ़र के रूप में दर्ज होती है, हर चरण में लगा समय भी दिखता है।',
-  'Papers that do not run out quietly': 'कागज़ात चुपचाप ख़त्म नहीं होंगे', 'Insurance, registration and inspection dates. A colour shows when one is close to expiring or already expired.': 'बीमा, पंजीकरण और निरीक्षण की तारीखें। जब कोई कागज़ ख़त्म होने वाला हो या ख़त्म हो चुका हो, तो रंग से पता चलता है।',
-  'Hire contracts': 'हायर कॉन्ट्रैक्ट', 'See which trips are still waiting for the hire papers from the company, and which are signed and ready.': 'देखें कि किन ट्रिप के लिए कंपनी से हायर कागज़ अभी बाकी हैं और कौन सी साइन होकर तैयार हैं।',
-  'Drivers and their records': 'ड्राइवर और उनके रिकॉर्ड', 'Licence, ID and home address for every driver, with a note when an ID has been checked.': 'हर ड्राइवर का लाइसेंस, पहचान पत्र और घर का पता, और पहचान पत्र जाँचे जाने का निशान।',
-  'Cargo and people': 'माल और सवारी', 'Trucks with load limits. Vans, cars and minibuses with seats.': 'ट्रक के लिए वज़न की सीमा। वैन, कार और मिनीबस के लिए सीटें।',
-  'How it works': 'यह कैसे काम करता है', 'Add your vehicles and drivers': 'अपनी गाड़ियाँ और ड्राइवर जोड़ें', 'Enter each vehicle with its type, fuel and papers. Add your drivers with their licence details.': 'हर गाड़ी का प्रकार, ईंधन और कागज़ात भरें। ड्राइवरों को उनके लाइसेंस की जानकारी के साथ जोड़ें।',
+  'Create your account': 'अपना खाता बनाएँ', 'Create a company account': 'कंपनी खाता बनाएँ', 'Create account': 'खाता बनाएँ', 'I have an account': 'मेरा खाता है', 'Welcome back.': 'फिर से स्वागत है।',
+  'Free for 30 days. No card needed.': '30 दिन मुफ़्त। कार्ड की ज़रूरत नहीं।',
+  'Continue with Google': 'Google से जारी रखें', 'or': 'या', 'Company name': 'कंपनी का नाम', 'Email': 'ईमेल', 'Password': 'पासवर्ड', 'Name your company': 'अपनी कंपनी का नाम बताएँ',
+  'Continue': 'आगे बढ़ें', 'This is the fleet you will manage here.': 'यही वह फ़्लीट है जिसे आप यहाँ संभालेंगे।', 'Parked': 'खड़ी',
+  'Fleet management platform': 'फ़्लीट मैनेजमेंट प्लेटफ़ॉर्म', 'Know every vehicle. Know what earns.': 'हर गाड़ी को जानें। जानें क्या कमाई कर रहा है।', 'Fleet scheduling for transport companies in India.': 'भारत की ट्रांसपोर्ट कंपनियों के लिए फ़्लीट शेड्यूलिंग।', 'Skip': 'छोड़ें',
+  'Features': 'सुविधाएँ', 'How it works': 'यह कैसे काम करता है', 'FAQ': 'सवाल-जवाब',
+  'Feel your fleet’s heartbeat.': 'अपनी गाड़ियों की धड़कन महसूस करें।',
+  'See every vehicle, what it carries and whether the trip earns. Schedule trips, track papers and keep driver records in one place.': 'हर गाड़ी देखें, वह क्या ले जा रही है और ट्रिप से कमाई हो रही है या नहीं। ट्रिप तय करें, कागज़ात देखें और ड्राइवर रिकॉर्ड एक ही जगह रखें।',
+  'Sample data': 'नमूना डेटा', 'Today': 'आज',
+  'Made for fleet owners.': 'फ़्लीट मालिकों के लिए बना।', 'Three things you can check in seconds.': 'तीन चीज़ें जो आप सेकंडों में देख सकते हैं।',
+  'Trips': 'ट्रिप', 'Paid or empty': 'कमाई या खाली', 'on every trip': 'हर ट्रिप में', 'Each trip is marked as paid work or an empty run, with the time spent in each stage.': 'हर ट्रिप कमाई वाली या खाली सफ़र के रूप में दर्ज होती है, हर चरण में लगा समय भी दिखता है।',
+  'Papers': 'कागज़ात', '3 dates': '3 तारीखें', 'tracked per vehicle': 'हर गाड़ी की', 'Insurance, registration and inspection, with a colour when one is close to expiring.': 'बीमा, पंजीकरण और निरीक्षण, और ख़त्म होने के पास होने पर रंग से संकेत।',
+  'Hire contracts': 'हायर कॉन्ट्रैक्ट', 'Waiting or signed': 'बाकी या साइन', 'at a glance': 'एक नज़र में', 'See which trips still wait for the hire papers from the company.': 'देखें कि किन ट्रिप के लिए कंपनी से हायर कागज़ अभी बाकी हैं।',
+  'dbeat brings': 'dbeat लाता है', 'every vehicle onto one screen': 'हर गाड़ी को एक स्क्रीन पर', ', with its': ', उसके', 'fuel and papers': 'ईंधन और कागज़ात', '. It tracks': ' के साथ। यह', 'Back to the depot': 'डिपो वापस', 'Conference shuttle': 'कॉन्फ़्रेंस शटल', 'earning and empty runs': 'कमाई और खाली सफ़र', ', keeps': ' का हिसाब रखता है,', 'driver records': 'ड्राइवर रिकॉर्ड', 'hire contracts': 'हायर कॉन्ट्रैक्ट', 'in order, and works for': 'सही रखता है, और', 'cargo and people': 'माल और सवारी', 'vehicles alike, in English and Hindi.': 'दोनों तरह की गाड़ियों के लिए, अंग्रेज़ी और हिंदी में चलता है।', 'and': 'और',
+  'Every vehicle': 'हर गाड़ी', 'Fuel, papers, driver and current trip for each vehicle, on one card.': 'हर गाड़ी का ईंधन, कागज़ात, ड्राइवर और चल रही ट्रिप, एक ही कार्ड पर।', 'Try the demo →': 'डेमो देखें →',
+  'How it works.': 'यह कैसे काम करता है।', 'Three steps from sign-up to a full day of trips.': 'साइन-अप से पूरे दिन की ट्रिप तक तीन कदम।',
+  'Step 1': 'कदम 1', 'Step 2': 'कदम 2', 'Step 3': 'कदम 3',
+  'Add your vehicles and drivers': 'अपनी गाड़ियाँ और ड्राइवर जोड़ें', 'Enter each vehicle with its type, fuel and papers. Add your drivers with their licence details.': 'हर गाड़ी का प्रकार, ईंधन और कागज़ात भरें। ड्राइवरों को उनके लाइसेंस की जानकारी के साथ जोड़ें।',
   'Plan the day': 'दिन की योजना बनाएँ', 'Make trips and give each one a driver and a vehicle that fits the load.': 'ट्रिप बनाएँ और हर ट्रिप को ड्राइवर और माल के हिसाब से सही गाड़ी दें।',
   'Follow each trip': 'हर ट्रिप पर नज़र रखें', 'Mark pickup, loaded, return and the end of the trip, and see earning time and empty time add up.': 'पिकअप, माल लदा, वापसी और ट्रिप का अंत दर्ज करें, और कमाई का समय और खाली समय जुड़ता देखें।',
-  'Coming next': 'आगे आने वाला', 'Live location from your GPS trackers, so you can see where each vehicle is. In planning.': 'आपके GPS ट्रैकर से लाइव लोकेशन, ताकि आप देख सकें कि हर गाड़ी कहाँ है। योजना में है।',
-  'Start with your own fleet': 'अपनी गाड़ियों के साथ शुरू करें', 'Open the demo with sample data, or create your account and start the free 30 days.': 'नमूना डेटा के साथ डेमो खोलें, या खाता बनाकर 30 दिन मुफ़्त शुरू करें।',
-  'Your fleet, on one screen.': 'आपकी गाड़ियाँ, एक स्क्रीन पर।', 'Fleet scheduling for transport companies in India.': 'भारत की ट्रांसपोर्ट कंपनियों के लिए फ़्लीट शेड्यूलिंग।', 'Skip': 'छोड़ें',
-  'Privacy': 'गोपनीयता', 'Terms': 'शर्तें',
-  'Create your account': 'अपना खाता बनाएँ', 'Create a company account': 'कंपनी खाता बनाएँ', 'Create account': 'खाता बनाएँ', 'I have an account': 'मेरा खाता है', 'Welcome back.': 'फिर से स्वागत है।',
-  'Continue with Google': 'Google से जारी रखें', 'or': 'या', 'Company name': 'कंपनी का नाम', 'Email': 'ईमेल', 'Password': 'पासवर्ड', 'Name your company': 'अपनी कंपनी का नाम बताएँ',
-  'Continue': 'आगे बढ़ें', 'This is the fleet you will manage here.': 'यही वह फ़्लीट है जिसे आप यहाँ संभालेंगे।',
+  'Built for how fleets work.': 'फ़्लीट के काम करने के तरीक़े के हिसाब से बना।',
+  'Cargo and people vehicles.': 'माल और सवारी वाली गाड़ियाँ।', 'Trucks carry a load limit. Vans, cars and minibuses carry seats.': 'ट्रक के लिए वज़न की सीमा। वैन, कार और मिनीबस के लिए सीटें।',
+  'Driver records.': 'ड्राइवर रिकॉर्ड।', 'Licence, ID and home address for each driver, with an ID-checked note.': 'हर ड्राइवर का लाइसेंस, पहचान पत्र और घर का पता, पहचान पत्र जाँचे जाने के निशान के साथ।',
+  'English and Hindi.': 'अंग्रेज़ी और हिंदी।', 'Switch language on any screen, so everyone on your team can read it.': 'किसी भी स्क्रीन पर भाषा बदलें, ताकि आपकी टीम में सब पढ़ सकें।',
+  'Your own account.': 'आपका अपना खाता।', 'Each company sees only its own vehicles, drivers and trips.': 'हर कंपनी सिर्फ़ अपनी गाड़ियाँ, ड्राइवर और ट्रिप देखती है।',
+  'Vehicle papers': 'गाड़ी के कागज़ात', 'Inspection ends in 20 days': 'निरीक्षण 20 दिन में ख़त्म', 'Registration expired': 'पंजीकरण ख़त्म हो चुका', 'Insurance valid': 'बीमा मान्य', 'Soon': 'जल्द', 'Expired': 'ख़त्म', 'Valid': 'मान्य',
+  'Coming next.': 'आगे आने वाला।', 'What we are working on. Dates are not fixed.': 'हम किस पर काम कर रहे हैं। तारीख़ें तय नहीं हैं।', 'Planned': 'योजना में',
+  'Live GPS location': 'लाइव GPS लोकेशन', 'See where each vehicle is, from your own GPS trackers.': 'अपने GPS ट्रैकर से देखें कि हर गाड़ी कहाँ है।',
+  'Simple monthly plans': 'सरल मासिक प्लान', 'Paid plans after the free 30 days. You will see the price before any charge.': 'मुफ़्त 30 दिन के बाद पेड प्लान। कोई भी शुल्क लगने से पहले आपको कीमत दिखेगी।',
+  'Frequently asked questions.': 'अक्सर पूछे जाने वाले सवाल।', 'Didn’t find an answer? Try the demo and see for yourself.': 'जवाब नहीं मिला? डेमो खोलकर ख़ुद देखें।',
+  'How quickly can I start?': 'मैं कितनी जल्दी शुरू कर सकता हूँ?', 'Create an account, name your company and add your first vehicle in a few minutes.': 'खाता बनाएँ, कंपनी का नाम दें और कुछ ही मिनटों में अपनी पहली गाड़ी जोड़ें।',
+  'Which vehicles can I add?': 'मैं कौन सी गाड़ियाँ जोड़ सकता हूँ?', 'Trucks with a load limit, and vans, cars and minibuses with seats.': 'वज़न की सीमा वाले ट्रक, और सीटों वाली वैन, कार और मिनीबस।',
+  'Does dbeat show vehicles live on a map?': 'क्या dbeat गाड़ियाँ नक़्शे पर लाइव दिखाता है?', 'Not yet. Live GPS location is planned. Today you mark pickup, loaded, return and the end of each trip in the app.': 'अभी नहीं। लाइव GPS लोकेशन योजना में है। आज आप ऐप में पिकअप, माल लदा, वापसी और ट्रिप का अंत दर्ज करते हैं।',
+  'Is there a free trial?': 'क्या मुफ़्त ट्रायल है?', 'Yes. New accounts get 30 days free, no card needed.': 'हाँ। नए खाते को 30 दिन मुफ़्त मिलते हैं, कार्ड की ज़रूरत नहीं।',
+  'What does it cost after the trial?': 'ट्रायल के बाद इसकी कीमत क्या है?', 'Paid plans are not ready yet. We will show you the price before any charge.': 'पेड प्लान अभी तैयार नहीं हैं। कोई भी शुल्क लगने से पहले हम आपको कीमत दिखाएँगे।',
+  'Is my data separate from other companies?': 'क्या मेरा डेटा दूसरी कंपनियों से अलग है?', 'Yes. Each company sees only its own vehicles, drivers and trips.': 'हाँ। हर कंपनी सिर्फ़ अपनी गाड़ियाँ, ड्राइवर और ट्रिप देखती है।',
+  'Does it work in Hindi?': 'क्या यह हिंदी में चलता है?', 'Yes. Switch between English and Hindi on any screen.': 'हाँ। किसी भी स्क्रीन पर अंग्रेज़ी और हिंदी के बीच बदलें।',
+  'Where is my data stored?': 'मेरा डेटा कहाँ रखा जाता है?', 'Accounts and fleet data are stored with Supabase on servers in Ireland. See the Privacy Policy for details.': 'खाते और फ़्लीट का डेटा आयरलैंड के सर्वरों पर Supabase के पास रखा जाता है। विवरण के लिए गोपनीयता नीति देखें।',
+  'See your whole fleet on one screen, free for 30 days.': 'अपनी पूरी फ़्लीट एक स्क्रीन पर देखें, 30 दिन मुफ़्त।',
+  'Product': 'प्रोडक्ट', 'Account': 'खाता', 'Legal': 'क़ानूनी', 'Terms of Service': 'सेवा की शर्तें', 'Privacy Policy': 'गोपनीयता नीति', '© 2026 dbeat. All rights reserved.': '© 2026 dbeat. सर्वाधिकार सुरक्षित।',
 });
-const IC = {
-  car: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 9h10M7 14h4"/></svg>',
-  road: '<svg viewBox="0 0 24 24"><path d="M5 19 9 5m6 0 4 14M12 6v2m0 4v2m0 4v2"/></svg>',
-  doc: '<svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>',
-  sign: '<svg viewBox="0 0 24 24"><path d="M5 20h14M6 15l9-9 3 3-9 9H6z"/></svg>',
-  user: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>',
-  load: '<svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg>',
-};
-const featureCard = (ic, t, d) => `<div class="ln-card card sec"><div class="ic">${IC[ic]}</div><h3>${t}</h3><p>${d}</p></div>`;
-const landingHtml = () => `
-<header class="ln-top"><div class="ln-wrap"><div class="ln-brand"><span class="logo"><svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></span>dbeat</div>
-  <div class="acts"><button type="button" class="btn ghost sm" data-a="in">Sign in</button><button type="button" class="btn sm hide-s" data-a="up">Start free trial</button></div></div></header>
-<main class="ln-wrap">
-  <section class="ln-hero">
-    <div>
-      <h1 class="rv" style="--d:.05s">See every vehicle. Know which ones earn.</h1>
-      <p class="lead rv" style="--d:.15s">dbeat shows your whole fleet on one screen: fuel, papers, driver and trip. It separates trips that earn money from empty runs, so you can see how much time each vehicle spends running empty.</p>
-      <div class="ln-cta rv" style="--d:.25s"><button type="button" class="btn" data-a="up">Start free trial</button><button type="button" class="btn outline" data-a="demo">Try the demo</button></div>
-      <p class="ln-note rv" style="--d:.32s">Free for 30 days. No card needed.</p>
-      <p class="ln-note rv" style="--d:.36s;margin-top:4px">Works in English and Hindi.</p>
-    </div>
-    <div class="ln-mock card rv" style="--d:.2s" aria-hidden="true">
-      <div class="mk-head">Today<span>Sample data</span></div>
-      <div class="mk-row" style="--c:var(--earn)"><div class="mk-top"><div><b>Van 01 · Omar</b><small>Conference shuttle</small></div><span class="mk-pill">Earning</span></div><div class="mk-fuel"><i style="width:72%"></i></div></div>
-      <div class="mk-row" style="--c:var(--empty)"><div class="mk-top"><div><b>Truck 06 · Ravi</b><small>Back to the depot</small></div><span class="mk-pill">Empty run</span></div><div class="mk-fuel"><i style="width:41%"></i></div></div>
-      <div class="mk-row" style="--c:var(--ok);margin-bottom:0"><div class="mk-top"><div><b>Sedan 02 · Chen</b><small>Next: 4 PM</small></div><span class="mk-pill">Parked</span></div><div class="mk-fuel"><i style="width:38%"></i></div></div>
-    </div>
-  </section>
-  <section class="ln-sec"><div class="sec"><h2>What dbeat does</h2><p class="sub">The things a fleet owner checks every day, in one place.</p></div>
-    <div class="ln-grid">
-      ${featureCard('car', 'Every vehicle at a glance', 'Fuel, papers, driver and current trip, together on one card for each vehicle.')}
-      ${featureCard('road', 'Earning or empty run', 'Each trip is marked as paid work or an empty run, with the time spent in each stage.')}
-      ${featureCard('doc', 'Papers that do not run out quietly', 'Insurance, registration and inspection dates. A colour shows when one is close to expiring or already expired.')}
-      ${featureCard('sign', 'Hire contracts', 'See which trips are still waiting for the hire papers from the company, and which are signed and ready.')}
-      ${featureCard('user', 'Drivers and their records', 'Licence, ID and home address for every driver, with a note when an ID has been checked.')}
-      ${featureCard('load', 'Cargo and people', 'Trucks with load limits. Vans, cars and minibuses with seats.')}
-    </div></section>
-  <section class="ln-sec"><div class="sec"><h2>How it works</h2></div><div style="height:22px"></div>
-    <div class="ln-steps">
-      <div class="ln-step card sec"><h3>Add your vehicles and drivers</h3><p>Enter each vehicle with its type, fuel and papers. Add your drivers with their licence details.</p></div>
-      <div class="ln-step card sec"><h3>Plan the day</h3><p>Make trips and give each one a driver and a vehicle that fits the load.</p></div>
-      <div class="ln-step card sec"><h3>Follow each trip</h3><p>Mark pickup, loaded, return and the end of the trip, and see earning time and empty time add up.</p></div>
-    </div></section>
-  <section class="ln-sec" style="padding-top:8px"><div class="ln-next card sec"><span class="tag">Coming next</span><p>Live location from your GPS trackers, so you can see where each vehicle is. In planning.</p></div></section>
-  <section class="ln-sec"><div class="ln-final sec"><h2>Start with your own fleet</h2><p>Open the demo with sample data, or create your account and start the free 30 days.</p>
-    <div class="ln-cta"><button type="button" class="btn" data-a="up">Start free trial</button><button type="button" class="btn outline" data-a="demo">Try the demo</button></div></div></section>
-</main>
-<footer class="ln-wrap ln-foot"><span>dbeat.co.in</span><span><a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></span></footer>`;
+const lp = on => document.body.classList.toggle('lp', on);
+const FAQS = [
+  ['How quickly can I start?', 'Create an account, name your company and add your first vehicle in a few minutes.'],
+  ['Which vehicles can I add?', 'Trucks with a load limit, and vans, cars and minibuses with seats.'],
+  ['Does dbeat show vehicles live on a map?', 'Not yet. Live GPS location is planned. Today you mark pickup, loaded, return and the end of each trip in the app.'],
+  ['Is there a free trial?', 'Yes. New accounts get 30 days free, no card needed.'],
+  ['What does it cost after the trial?', 'Paid plans are not ready yet. We will show you the price before any charge.'],
+  ['Is my data separate from other companies?', 'Yes. Each company sees only its own vehicles, drivers and trips.'],
+  ['Does it work in Hindi?', 'Yes. Switch between English and Hindi on any screen.'],
+  ['Where is my data stored?', 'Accounts and fleet data are stored with Supabase on servers in Ireland. See the Privacy Policy for details.'],
+];
+const stat = (tag, big, lab, note) => `<div class="dl-card"><span class="dl-chip">${tag}</span><div><div class="big">${big}</div><div class="lab">${lab}</div><div class="note">${note}</div></div></div>`;
+const step = (n, t, d) => `<div class="dl-card dl-step"><span class="dl-chip">Step ${n}</span><div><div class="big" style="font-size:20px;line-height:24px">${t}</div><div class="note" style="font-size:13px;line-height:19px">${d}</div></div></div>`;
+const item = (t, d) => `<div class="dl-item"><b>${t}</b><p>${d}</p></div>`;
+const mkRow = (c, name, sub, pill, w) => `<div class="mk-row" style="--c:${c}"><div class="mk-top"><div><b>${name}</b><small>${sub}</small></div><span class="mk-pill">${pill}</span></div>${w ? `<div class="mk-fuel"><i style="width:${w}%"></i></div>` : ''}</div>`;
+const landingHtml = () => `<div class="dl-page">
+<header class="dl-hdr"><nav class="dl-nav"><a href="#dl-features">Features</a><a href="#dl-how">How it works</a><a href="#dl-faq">FAQ</a></nav>
+  <span class="dl-logo"><i></i>dbeat</span>
+  <div class="dl-right"><span class="dl-lang" role="group" aria-label="Language"><button type="button" data-lang="en" class="${lang === 'en' ? 'on' : ''}">EN</button><button type="button" data-lang="hi" class="${lang === 'hi' ? 'on' : ''}">हिं</button></span>
+  <button type="button" class="dl-btn sm grey" data-a="in">Sign in</button><button type="button" class="dl-btn sm" data-a="up">Start free trial</button></div></header>
+<section class="dl-hero"><h1>Feel your fleet’s heartbeat.</h1>
+  <p class="lead">See every vehicle, what it carries and whether the trip earns. Schedule trips, track papers and keep driver records in one place.</p>
+  <div class="dl-btns"><button type="button" class="dl-btn" data-a="up">Start free trial</button><button type="button" class="dl-btn grey" data-a="demo">Try the demo</button></div>
+  <p class="dl-note">Free for 30 days. No card needed.</p></section>
+<div class="dl-band"><div class="dl-mock" aria-hidden="true"><div class="mk-head">Today<span>Sample data</span></div>
+  ${mkRow('#3f9a4a', 'Van 01 · Omar', 'Conference shuttle', 'Earning', 72)}${mkRow('#a07a3c', 'Truck 06 · Ravi', 'Back to the depot', 'Empty run', 41)}${mkRow('#6b6b64', 'Sedan 02 · Chen', 'Next: 4 PM', 'Parked', 38)}</div></div>
+<section class="dl-sec dl-tint" id="dl-features"><h2>Made for fleet owners.</h2><p class="sub">Three things you can check in seconds.</p>
+  <div class="dl-cards">${stat('Trips', 'Paid or empty', 'on every trip', 'Each trip is marked as paid work or an empty run, with the time spent in each stage.')}${stat('Papers', '3 dates', 'tracked per vehicle', 'Insurance, registration and inspection, with a colour when one is close to expiring.')}${stat('Hire contracts', 'Waiting or signed', 'at a glance', 'See which trips still wait for the hire papers from the company.')}</div></section>
+<section class="dl-sec dl-state"><div class="dl-text">dbeat brings <span class="dl-kw" tabindex="0"><mark>every vehicle onto one screen</mark><span class="dl-pop"><span class="pic"><span>Every vehicle</span></span><span class="t">Fuel, papers, driver and current trip for each vehicle, on one card.</span><button type="button" data-a="demo">Try the demo →</button></span></span>, with its <u>fuel and papers</u>. It tracks <u>earning and empty runs</u>, keeps <u>hire contracts</u> and <u>driver records</u> in order, and works for <u>cargo and people</u> vehicles alike, in English and Hindi.</div></section>
+<section class="dl-sec dl-tint" id="dl-how"><h2>How it works.</h2><p class="sub">Three steps from sign-up to a full day of trips.</p>
+  <div class="dl-cards">${step(1, 'Add your vehicles and drivers', 'Enter each vehicle with its type, fuel and papers. Add your drivers with their licence details.')}${step(2, 'Plan the day', 'Make trips and give each one a driver and a vehicle that fits the load.')}${step(3, 'Follow each trip', 'Mark pickup, loaded, return and the end of the trip, and see earning time and empty time add up.')}</div></section>
+<section class="dl-two"><div><h2>Built for how fleets work.</h2><div class="dl-items">${item('Cargo and people vehicles.', 'Trucks carry a load limit. Vans, cars and minibuses carry seats.')}${item('Driver records.', 'Licence, ID and home address for each driver, with an ID-checked note.')}${item('English and Hindi.', 'Switch language on any screen, so everyone on your team can read it.')}${item('Your own account.', 'Each company sees only its own vehicles, drivers and trips.')}</div></div>
+  <div class="dl-art"><div class="dl-mock" aria-hidden="true"><div class="mk-head">Vehicle papers<span>Sample data</span></div>
+  ${mkRow('#3f9a4a', 'Van 01 · Insurance', 'Insurance valid', 'Valid')}${mkRow('#b7791f', 'Van 01 · Inspection', 'Inspection ends in 20 days', 'Soon')}${mkRow('#c0392b', 'Truck 06 · Registration', 'Registration expired', 'Expired')}</div></div></section>
+<section class="dl-sec dl-tint"><h2>Coming next.</h2><p class="sub">What we are working on. Dates are not fixed.</p>
+  <div class="dl-cards">${stat('Planned', 'Live GPS location', '', 'See where each vehicle is, from your own GPS trackers.')}${stat('Planned', 'Simple monthly plans', '', 'Paid plans after the free 30 days. You will see the price before any charge.')}</div></section>
+<section class="dl-faq" id="dl-faq"><div><h2>Frequently asked questions.</h2><p class="help">Didn’t find an answer? Try the demo and see for yourself.</p></div>
+  <div class="dl-qs">${FAQS.map(([q, a], i) => `<div class="dl-q${i === 0 ? ' open' : ''}"><button type="button" data-faq aria-expanded="${i === 0}"><span class="sg">${i === 0 ? '−' : '+'}</span><span>${q}</span></button><div class="a">${a}</div></div>`).join('')}</div></section>
+<section class="dl-cta"><div><b>See your whole fleet on one screen, free for 30 days.</b><div class="dl-btns" style="width:auto;max-width:none;background:none;padding:0;margin-top:22px"><button type="button" class="dl-btn white" data-a="up">Start free trial</button><button type="button" class="dl-btn ghost" data-a="demo">Try the demo</button></div></div></section>
+<footer class="dl-foot"><div style="display:flex;flex-direction:column;gap:12px"><span class="lg">● dbeat</span><span>Fleet scheduling for transport companies in India.</span></div>
+  <div class="cols"><div><span>Product</span><a href="#dl-features">Features</a><a href="#dl-how">How it works</a><a href="#dl-faq">FAQ</a></div><div><span>Account</span><button type="button" class="lk" data-a="in">Sign in</button><button type="button" class="lk" data-a="up">Start free trial</button><button type="button" class="lk" data-a="demo">Try the demo</button></div><div><span>Legal</span><a href="/terms">Terms of Service</a><a href="/privacy">Privacy Policy</a></div></div></footer>
+<div class="dl-copy">© 2026 dbeat. All rights reserved.</div></div>`;
 function showLanding() {
   $('.app').hidden = true; $('#signout').hidden = true; authEl.hidden = true; authEl.innerHTML = '';
-  landing.className = ''; landing.hidden = false; landing.innerHTML = landingHtml(); window.scrollTo(0, 0);
-  if ('IntersectionObserver' in window) {
-    landing.classList.add('anim');
-    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .12 });
-    landing.querySelectorAll('.sec').forEach(el => io.observe(el));
-  }
+  lp(true); landing.hidden = false; landing.innerHTML = landingHtml(); window.scrollTo(0, 0);
 }
-const splashHtml = () => `<div class="sp-stack">
-  <div class="sp-mark"><svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></div>
-  <div class="sp-word">dbeat</div>
-  <div class="sp-roadwrap"><svg viewBox="0 0 480 110"><path class="sp-base" d="M20 80 C 140 80, 180 20, 300 40 S 420 70, 460 30"/><path class="sp-line" pathLength="1" d="M20 80 C 140 80, 180 20, 300 40 S 420 70, 460 30"/><circle class="sp-pin" cx="460" cy="30" r="7"/></svg><div class="sp-dot"></div></div>
-  <p class="sp-tag">Your fleet, on one screen.</p>
-  <p class="sp-sub">Fleet scheduling for transport companies in India.</p></div>
-  <div class="sp-bar"></div><button type="button" class="sp-skip">Skip</button>`;
+const splashHtml = () => `<div class="sp-top"><span>Fleet management platform</span><span class="sp-pct">0%</span></div>
+  <div class="sp-col"><div class="sp-mark"><i></i>dbeat</div>
+    <div class="sp-band"><svg class="ecg" viewBox="0 0 1000 60" preserveAspectRatio="none" width="100%" height="60"><line x1="0" y1="30" x2="1000" y2="30" stroke="rgba(255,255,255,.2)" stroke-width="1" vector-effect="non-scaling-stroke"/><path class="sp-ecg" d="M0 30 H150 l6 3 l8 -24 l9 40 l8 -19 H400 l6 3 l8 -24 l9 40 l8 -19 H650 l6 3 l8 -24 l9 40 l8 -19 H880 l6 3 l8 -24 l9 40 l8 -19 H1000" fill="none" stroke="#3f9a4a" stroke-width="2" vector-effect="non-scaling-stroke" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1"/></svg>
+      <svg class="sp-truck" viewBox="0 0 140 64" width="160" height="73" fill="none" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"><rect x="2" y="8" width="84" height="44"/><text x="44" y="35" font-family="Syne, sans-serif" font-size="14" font-weight="600" fill="#fff" stroke="none" text-anchor="middle">dbeat</text><path d="M90 20 H116 L132 34 V52 H90 Z"/><path d="M98 26 H112 L122 34 H98 Z"/><line x1="2" y1="52" x2="132" y2="52"/><g fill="#0f1008"><circle cx="24" cy="54" r="8"/><circle cx="62" cy="54" r="8"/><circle cx="112" cy="54" r="8"/></g><g class="sp-wheel"><line x1="24" y1="48" x2="24" y2="60"/></g><g class="sp-wheel"><line x1="62" y1="48" x2="62" y2="60"/></g><g class="sp-wheel"><line x1="112" y1="48" x2="112" y2="60"/></g></svg></div>
+    <div class="sp-pitch"><b>Know every vehicle. Know what earns.</b><span>Fleet scheduling for transport companies in India.</span></div></div>
+  <button type="button" class="sp-skip">Skip</button>`;
 function runSplash(done) {
   const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
   splashEl.className = ''; splashEl.innerHTML = splashHtml(); splashEl.hidden = false;
-  let over = false, timer = 0;
+  const pct = $('.sp-pct', splashEl), truck = $('.sp-truck', splashEl), ecg = $('.sp-ecg', splashEl), pitch = $('.sp-pitch', splashEl), wheels = splashEl.querySelectorAll('.sp-wheel');
+  const DUR = 3000;
+  let over = false, raf = 0, t0 = 0;
+  const frame = t => {
+    const smooth = Math.min(1, Math.max(0, (t - .85) / .15));
+    pct.textContent = Math.round(t * 100) + '%';
+    truck.style.left = `calc(${(t * 100).toFixed(3)}% - ${(t * 160).toFixed(2)}px)`;
+    wheels.forEach(w => { w.style.transform = `rotate(${(t * 3600).toFixed(1)}deg)`; });
+    ecg.setAttribute('stroke-dashoffset', (1 - Math.min(1, t * .88 + .12 * smooth)).toFixed(4));
+    pitch.style.opacity = Math.min(1, Math.max(0, (t - .45) / .3));
+  };
   const end = () => {
-    if (over) return; over = true; clearTimeout(timer); document.removeEventListener('keydown', onKey);
+    if (over) return; over = true; cancelAnimationFrame(raf); document.removeEventListener('keydown', onKey);
     splashEl.classList.add('out');
     setTimeout(() => { splashEl.hidden = true; splashEl.innerHTML = ''; if (done) done(); }, 500);
   };
   const onKey = e => { if (e.key === 'Escape' || e.key === 'Enter') end(); };
   document.addEventListener('keydown', onKey);
-  splashEl.addEventListener('click', e => { if (e.target.closest('.sp-skip')) { e.stopPropagation(); track('splash_skipped'); end(); } });
-  timer = setTimeout(end, reduce ? 1200 : 3000);
+  splashEl.onclick = e => { e.stopPropagation(); if (e.target.closest('.sp-skip')) track('splash_skipped'); end(); };
+  if (reduce) { frame(1); setTimeout(end, 1200); return; }
+  const tick = now => {
+    if (over) return;
+    t0 = t0 || now;
+    const p = Math.min(1, (now - t0) / DUR), t = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+    frame(t);
+    if (p < 1) raf = requestAnimationFrame(tick); else end();
+  };
+  raf = requestAnimationFrame(tick);
 }
 function startLanding(withSplash) {
   showLanding(); track('landing_viewed');
   let seen = '1'; try { seen = sessionStorage.getItem('dbeat.splash'); } catch {}
-  if (withSplash && !seen) {
-    try { sessionStorage.setItem('dbeat.splash', '1'); } catch {}
-    landing.classList.add('pre');
-    runSplash(() => landing.classList.remove('pre'));
-  }
+  if (withSplash && !seen) { try { sessionStorage.setItem('dbeat.splash', '1'); } catch {} runSplash(); }
 }
+landing.addEventListener('click', e => {
+  const q = e.target.closest('[data-faq]'); if (!q) return;
+  e.stopPropagation();
+  const row = q.parentNode, was = row.classList.contains('open');
+  landing.querySelectorAll('.dl-q').forEach(r => { r.classList.remove('open'); r.querySelector('[data-faq]').setAttribute('aria-expanded', 'false'); r.querySelector('.sg').textContent = '+'; });
+  if (!was) { row.classList.add('open'); q.setAttribute('aria-expanded', 'true'); q.querySelector('.sg').textContent = '−'; }
+});
 
 async function init() {
   if (!sb) return startLanding(true);
