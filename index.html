@@ -216,7 +216,7 @@ input:focus,select:focus,textarea:focus{outline:0;box-shadow:0 0 0 3.5px color-m
 .authbox form input{width:100%;box-sizing:border-box}
 .authbox .alt{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .authbox .alt .btn{flex:1}
-.legal{margin:16px 0 0;text-align:center;font-size:12.5px;color:var(--muted)}.legal a{color:var(--muted)}
+.legal{margin:16px 0 0;text-align:center;font-size:12.5px;color:var(--muted)}.legal a,.linkbtn{color:var(--muted)}.linkbtn{border:0;background:none;padding:0;font-size:inherit;cursor:pointer;text-decoration:underline}
 .gbtn{gap:10px;margin-bottom:4px}.gbtn svg{width:20px;height:20px}
 .or{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px;margin:14px 0 16px}
 .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
@@ -225,6 +225,91 @@ input:focus,select:focus,textarea:focus{outline:0;box-shadow:0 0 0 3.5px color-m
 #sync{position:fixed;top:46px;left:50%;transform:translateX(-50%);z-index:25;background:color-mix(in srgb,var(--bad) 14%,var(--card));color:var(--bad);padding:6px 14px;border-radius:980px;font-size:13px;font-weight:500;box-shadow:var(--shadow)}
 #sync[hidden]{display:none}
 #envbadge{position:fixed;left:50%;transform:translateX(-50%);top:8px;z-index:40;background:var(--soon);color:#000;padding:4px 12px;border-radius:980px;font-size:12px;font-weight:700;letter-spacing:.02em;pointer-events:none}
+
+/* splash */
+#splash{position:fixed;inset:0;z-index:50;background:radial-gradient(60% 50% at 50% 40%,color-mix(in srgb,var(--accent) 16%,var(--bg)),var(--bg));display:grid;place-items:center;overflow:hidden;transition:opacity .5s var(--ease),transform .5s var(--ease)}
+#splash[hidden]{display:none}
+#splash.out{opacity:0;transform:scale(1.03);pointer-events:none}
+.sp-stack{display:grid;justify-items:center;gap:8px;width:100%}
+.sp-mark{width:76px;height:76px;border-radius:22px;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 78%,#fff),var(--accent));display:grid;place-items:center;color:#fff;box-shadow:0 18px 50px color-mix(in srgb,var(--accent) 45%,transparent);animation:spMark .8s cubic-bezier(.2,1.3,.4,1) both}
+.sp-mark svg{width:38px;height:38px;stroke-width:2.2}
+.sp-word{font-size:46px;font-weight:700;letter-spacing:-.05em;line-height:1.1;animation:spUp .7s .45s var(--ease) both}
+.sp-roadwrap{position:relative;width:480px;height:110px;margin-top:4px}
+.sp-roadwrap svg{position:absolute;inset:0;width:480px;height:110px;overflow:visible}
+.sp-base{stroke:var(--line);stroke-width:3;stroke-linecap:round;stroke-dasharray:1 9;fill:none}
+.sp-line{fill:none;stroke:var(--accent);stroke-width:3.5;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:spDraw 1.8s .8s cubic-bezier(.5,0,.2,1) forwards}
+.sp-dot{position:absolute;left:0;top:0;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px var(--accent),0 6px 16px color-mix(in srgb,var(--accent) 50%,transparent);offset-path:path("M20 80 C 140 80, 180 20, 300 40 S 420 70, 460 30");offset-rotate:0deg;animation:spTravel 1.8s .8s cubic-bezier(.5,0,.2,1) both}
+.sp-pin{transform-box:fill-box;transform-origin:center;fill:var(--accent);animation:spPin .5s 2.45s cubic-bezier(.2,1.4,.4,1) both}
+.sp-tag{margin:0;font-size:20px;font-weight:600;letter-spacing:-.02em;animation:spUp .7s 1.6s var(--ease) both}
+.sp-sub{margin:0;font-size:14.5px;color:var(--muted);animation:spUp .7s 1.85s var(--ease) both}
+.sp-bar{position:absolute;left:0;bottom:0;height:3px;background:var(--accent);animation:spBar 3s linear both}
+.sp-skip{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:max(18px,env(safe-area-inset-bottom,0px));border:0;background:var(--fill);color:var(--muted);padding:7px 16px;border-radius:980px;font-size:13.5px;font-weight:500;cursor:pointer;animation:spUp .5s 1s var(--ease) both}
+@keyframes spMark{from{opacity:0;transform:scale(.55) translateY(8px)}to{opacity:1;transform:none}}
+@keyframes spUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes spDraw{to{stroke-dashoffset:0}}
+@keyframes spTravel{0%{offset-distance:0%;opacity:0}8%{opacity:1}100%{offset-distance:100%;opacity:1}}
+@keyframes spPin{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+@keyframes spBar{from{width:0}to{width:100%}}
+@media (max-width:520px){.sp-roadwrap{transform:scale(.68);margin:-14px 0}.sp-word{font-size:40px}}
+@media (prefers-reduced-motion:reduce){#splash *{animation-duration:.01ms!important;animation-delay:0s!important}}
+/* landing */
+#landing{min-height:100vh;background:var(--bg);color:var(--text)}
+#landing[hidden]{display:none}
+.ln-wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.ln-top{position:sticky;top:0;z-index:15;background:var(--glass);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-bottom:.5px solid var(--line)}
+.ln-top .ln-wrap{display:flex;align-items:center;justify-content:space-between;height:60px;padding-right:200px}
+.ln-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;letter-spacing:-.03em}
+.ln-brand .logo{width:30px;height:30px;border-radius:9px;background:var(--accent);color:#fff;display:grid;place-items:center}
+.ln-brand .logo svg{width:17px;height:17px;stroke-width:2.4}
+.ln-top .acts{display:flex;gap:8px}
+.ln-hero{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding:72px 0 56px}
+.ln-hero h1{margin:0 0 18px;font-size:clamp(36px,5.4vw,60px);line-height:1.04;letter-spacing:-.05em}
+.ln-hero p.lead{margin:0 0 26px;font-size:18px;line-height:1.5;color:var(--muted);max-width:30em}
+.ln-cta{display:flex;gap:10px;flex-wrap:wrap}
+.ln-cta .btn{padding:14px 24px;font-size:16.5px;border-radius:980px}
+.ln-note{margin:14px 0 0;font-size:14px;color:var(--muted)}
+.ln-mock{padding:18px;border-radius:26px;max-width:440px;justify-self:end;width:100%;box-shadow:0 0 0 .5px var(--line),0 30px 70px rgba(20,30,70,.18)}
+.mk-head{display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:15px;margin:2px 2px 12px}
+.mk-head span{font-size:12px;font-weight:500;color:var(--muted);background:var(--fill);padding:3px 10px;border-radius:980px}
+.mk-row{background:var(--fill);border-radius:18px;padding:13px 14px;margin-bottom:10px}
+.mk-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.mk-top b{display:block;font-size:15px}.mk-top small{color:var(--muted);font-size:12.5px}
+.mk-pill{font-size:12px;font-weight:600;padding:4px 10px;border-radius:980px;background:color-mix(in srgb,var(--c) 15%,transparent);color:var(--c);white-space:nowrap}
+.mk-fuel{height:6px;border-radius:6px;background:var(--line);margin-top:11px;overflow:hidden}
+.mk-fuel i{display:block;height:100%;border-radius:6px;background:var(--c)}
+.ln-sec{padding:56px 0}
+.ln-sec h2{margin:0 0 8px;font-size:clamp(28px,3.6vw,40px);letter-spacing:-.04em;line-height:1.1}
+.ln-sec .sub{margin:0 0 30px;color:var(--muted);font-size:17px}
+.ln-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.ln-card{padding:24px 22px;border-radius:24px}
+.ln-card .ic{width:44px;height:44px;border-radius:14px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;margin-bottom:16px}
+.ln-card .ic svg{width:22px;height:22px}
+.ln-card h3{margin:0 0 6px;font-size:18px;letter-spacing:-.02em}
+.ln-card p{margin:0;color:var(--muted);font-size:15px;line-height:1.5}
+.ln-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:s}
+.ln-step{padding:24px 22px;border-radius:24px;position:relative}
+.ln-step::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;margin-bottom:14px}
+.ln-step h3{margin:0 0 6px;font-size:18px;letter-spacing:-.02em}
+.ln-step p{margin:0;color:var(--muted);font-size:15px;line-height:1.5}
+.ln-next{display:flex;gap:14px;align-items:center;padding:20px 22px;border-radius:24px}
+.ln-next .tag{flex:none;font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:5px 12px;border-radius:980px}
+.ln-next p{margin:0;color:var(--muted)}
+.ln-final{text-align:center;padding:64px 20px;border-radius:32px;background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 14%,var(--card)),var(--card))}
+.ln-final h2{margin:0 0 8px}.ln-final p{margin:0 0 24px;color:var(--muted);font-size:17px}
+.ln-final .ln-cta{justify-content:center}
+.ln-foot{padding:36px 0 56px;color:var(--muted);font-size:13.5px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.ln-foot a{color:var(--muted)}
+#landing.pre .rv{opacity:0;transform:translateY(16px)}
+.rv{transition:opacity .8s var(--ease),transform .8s var(--ease);transition-delay:var(--d,0s)}
+#landing.anim .sec:not(.in){opacity:0;transform:translateY(22px)}
+.sec{transition:opacity .8s var(--ease),transform .8s var(--ease)}
+@media (max-width:860px){
+  .ln-hero{grid-template-columns:1fr;gap:32px;padding:40px 0 32px}.ln-mock{justify-self:stretch;max-width:none}
+  .ln-grid,.ln-steps{grid-template-columns:1fr}
+  .ln-top .ln-wrap{padding-right:176px}.ln-top .acts .hide-s{display:none}
+  .ln-sec{padding:36px 0}
+}
+@media (prefers-reduced-motion:reduce){.rv,.sec{transition:none}#landing.pre .rv,#landing.anim .sec:not(.in){opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important}}
 @media(max-width:760px){
   .app{grid-template-columns:1fr}
@@ -243,12 +328,14 @@ input:focus,select:focus,textarea:focus{outline:0;box-shadow:0 0 0 3.5px color-m
 </script>
 </head>
 <body>
-<div class="app">
+<div class="app" hidden>
   <aside><div class="brand"><span class="logo"><svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></span>dbeat</div><nav id="nav"></nav><div class="seg themeseg" role="group" aria-label="Appearance"><button type="button" data-theme-set="light" aria-label="Light mode" title="Light"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4"/></svg></button><button type="button" data-theme-set="dark" aria-label="Dark mode" title="Dark"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></button></div></aside>
   <main id="main"></main>
 </div>
 <div class="seg lang" role="group" aria-label="Language"><button type="button" data-lang="en">English</button><button type="button" data-lang="hi">हिंदी</button><button type="button" data-act="signout" id="signout" hidden>Sign out</button></div>
 <dialog id="dlg"></dialog>
+<div id="landing" hidden></div>
+<div id="splash" hidden></div>
 <div id="auth" hidden></div>
 <div id="sync" hidden></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -596,6 +683,7 @@ function setLang(l) {
   document.documentElement.lang = lang; track('language_' + lang); try { if (window.clarity) window.clarity('set', 'language', lang); } catch {}
   document.querySelectorAll('[data-lang]').forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
   close(); render();
+  if (landing && !landing.hidden) { const pre = landing.classList.contains('pre'); showLanding(); if (pre) landing.classList.add('pre'); } else if (authEl && !authEl.hidden) showAuth(authMode);
 }
 new MutationObserver(ms => { if (lang === 'hi') ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1 || n.nodeType === 3) hiNode(n); })); }).observe(document.body, { childList: true, subtree: true });
 
@@ -901,7 +989,7 @@ if (!IS_PROD) {
   const m = document.createElement('meta'); m.name = 'robots'; m.content = 'noindex,nofollow'; document.head.appendChild(m);
   const b = document.createElement('div'); b.id = 'envbadge'; b.textContent = 'STAGING'; document.body.appendChild(b);
 }
-const authEl = $('#auth'), syncEl = $('#sync');
+const authEl = $('#auth'), syncEl = $('#sync'), landing = $('#landing'), splashEl = $('#splash');
 const blankDb = () => ({ types: seed().types, drivers: [], vehicles: [], appts: [] });
 const setSync = msg => { syncEl.hidden = !msg; syncEl.textContent = msg || ''; };
 async function pushCloud() {
@@ -910,8 +998,9 @@ async function pushCloud() {
   const { error } = await sb.from('fleet_state').update({ data: db, updated_at: new Date().toISOString() }).eq('company_id', companyId);
   setSync(error ? 'Not saved. Check your internet.' : '');
 }
+let authMode = 'in';
 function showAuth(m = 'in', msg = '', isErr = false) {
-  $('.app').hidden = true; $('#signout').hidden = true; authEl.hidden = false;
+  authMode = m; landing.hidden = true; $('.app').hidden = true; $('#signout').hidden = true; authEl.hidden = false;
   const up = m === 'up', co = m === 'company';
   authEl.innerHTML = `<div class="authbox card"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></span>dbeat</div>
     <h1>${co ? 'Name your company' : up ? 'Create your account' : 'Sign in'}</h1>
@@ -925,10 +1014,10 @@ function showAuth(m = 'in', msg = '', isErr = false) {
       <button class="btn cta" type="submit">${co ? 'Continue' : up ? 'Create account' : 'Sign in'}</button>
     </form>
     <div class="alt">${co ? '' : `<button type="button" class="btn ghost sm" data-a="${up ? 'in' : 'up'}">${up ? 'I have an account' : 'Create a company account'}</button>`}<button type="button" class="btn outline sm" data-a="demo">Try the demo</button></div>
-    <p class="legal"><a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></p></div>`;
+    <p class="legal"><button type="button" class="linkbtn" data-a="home">Back to home</button> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></p></div>`;
   $('.amsg', authEl).textContent = msg;
 }
-function hideAuth() { authEl.hidden = true; authEl.innerHTML = ''; $('.app').hidden = false; $('#signout').hidden = false; }
+function hideAuth() { landing.hidden = true; authEl.hidden = true; authEl.innerHTML = ''; $('.app').hidden = false; $('#signout').hidden = false; }
 function enterDemo() {
   cloud = false; companyId = null;
   try { db = JSON.parse(localStorage.getItem(KEY)) || seed(); } catch { db = seed(); }
@@ -957,7 +1046,7 @@ async function signOut() {
   if (cloud && saveTimer) await pushCloud();
   cloud = false; companyId = null; db = seed(); setSync('');
   if (sb) await sb.auth.signOut();
-  showAuth('in');
+  showLanding();
 }
 authEl.addEventListener('submit', async e => {
   e.preventDefault(); e.stopPropagation();
@@ -981,21 +1070,136 @@ authEl.addEventListener('submit', async e => {
     track('signed_in'); openCompany();
   } catch { fail('Something went wrong. Check your internet and try again.'); }
 });
-authEl.addEventListener('click', e => {
+const onAction = e => {
   const b = e.target.closest('[data-a]'); if (!b) return;
   e.stopPropagation();
-  if (b.dataset.a === 'demo') { track('demo_opened'); enterDemo(); }
+  if (b.dataset.a === 'home') showLanding();
+  else if (b.dataset.a === 'demo') { track('demo_opened'); enterDemo(); }
   else if (b.dataset.a === 'google') {
     track('google_clicked'); b.disabled = true;
     sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin } }).then(({ error }) => {
       if (error) { b.disabled = false; const msg = $('.amsg', authEl); if (msg) { msg.className = 'amsg err'; msg.textContent = 'Google sign-in is not available right now. Use email instead.'; } }
     });
-  } else showAuth(b.dataset.a);
+  } else { track('cta_' + b.dataset.a); showAuth(b.dataset.a); }
+};
+authEl.addEventListener('click', onAction);
+landing.addEventListener('click', onAction);
+/* ---- Splash and landing page ---- */
+Object.assign(HI, {
+  'Sign in': 'साइन इन', 'Start free trial': 'मुफ़्त ट्रायल शुरू करें', 'Try the demo': 'डेमो देखें', 'Back to home': 'होम पर वापस',
+  'See every vehicle. Know which ones earn.': 'हर गाड़ी देखें। जानें कौन सी कमाई कर रही है।',
+  'dbeat shows your whole fleet on one screen: fuel, papers, driver and trip. It separates trips that earn money from empty runs, so you can see how much time each vehicle spends running empty.': 'dbeat आपकी पूरी गाड़ियाँ एक स्क्रीन पर दिखाता है: ईंधन, कागज़ात, ड्राइवर और ट्रिप। यह कमाई वाली ट्रिप और खाली सफ़र को अलग करता है, ताकि आप देख सकें कि हर गाड़ी कितना समय खाली चलती है।',
+  'Free for 30 days. No card needed.': '30 दिन मुफ़्त। कार्ड की ज़रूरत नहीं।', 'Works in English and Hindi.': 'अंग्रेज़ी और हिंदी में चलता है।', 'Sample data': 'नमूना डेटा', 'Parked': 'खड़ी',
+  'What dbeat does': 'dbeat क्या करता है', 'The things a fleet owner checks every day, in one place.': 'वो सब कुछ जो फ़्लीट मालिक रोज़ देखता है, एक ही जगह।',
+  'Every vehicle at a glance': 'हर गाड़ी एक नज़र में', 'Fuel, papers, driver and current trip, together on one card for each vehicle.': 'ईंधन, कागज़ात, ड्राइवर और चल रही ट्रिप, हर गाड़ी के लिए एक ही कार्ड पर।',
+  'Earning or empty run': 'कमाई या खाली सफ़र', 'Each trip is marked as paid work or an empty run, with the time spent in each stage.': 'हर ट्रिप कमाई वाली या खाली सफ़र के रूप में दर्ज होती है, हर चरण में लगा समय भी दिखता है।',
+  'Papers that do not run out quietly': 'कागज़ात चुपचाप ख़त्म नहीं होंगे', 'Insurance, registration and inspection dates. A colour shows when one is close to expiring or already expired.': 'बीमा, पंजीकरण और निरीक्षण की तारीखें। जब कोई कागज़ ख़त्म होने वाला हो या ख़त्म हो चुका हो, तो रंग से पता चलता है।',
+  'Hire contracts': 'हायर कॉन्ट्रैक्ट', 'See which trips are still waiting for the hire papers from the company, and which are signed and ready.': 'देखें कि किन ट्रिप के लिए कंपनी से हायर कागज़ अभी बाकी हैं और कौन सी साइन होकर तैयार हैं।',
+  'Drivers and their records': 'ड्राइवर और उनके रिकॉर्ड', 'Licence, ID and home address for every driver, with a note when an ID has been checked.': 'हर ड्राइवर का लाइसेंस, पहचान पत्र और घर का पता, और पहचान पत्र जाँचे जाने का निशान।',
+  'Cargo and people': 'माल और सवारी', 'Trucks with load limits. Vans, cars and minibuses with seats.': 'ट्रक के लिए वज़न की सीमा। वैन, कार और मिनीबस के लिए सीटें।',
+  'How it works': 'यह कैसे काम करता है', 'Add your vehicles and drivers': 'अपनी गाड़ियाँ और ड्राइवर जोड़ें', 'Enter each vehicle with its type, fuel and papers. Add your drivers with their licence details.': 'हर गाड़ी का प्रकार, ईंधन और कागज़ात भरें। ड्राइवरों को उनके लाइसेंस की जानकारी के साथ जोड़ें।',
+  'Plan the day': 'दिन की योजना बनाएँ', 'Make trips and give each one a driver and a vehicle that fits the load.': 'ट्रिप बनाएँ और हर ट्रिप को ड्राइवर और माल के हिसाब से सही गाड़ी दें।',
+  'Follow each trip': 'हर ट्रिप पर नज़र रखें', 'Mark pickup, loaded, return and the end of the trip, and see earning time and empty time add up.': 'पिकअप, माल लदा, वापसी और ट्रिप का अंत दर्ज करें, और कमाई का समय और खाली समय जुड़ता देखें।',
+  'Coming next': 'आगे आने वाला', 'Live location from your GPS trackers, so you can see where each vehicle is. In planning.': 'आपके GPS ट्रैकर से लाइव लोकेशन, ताकि आप देख सकें कि हर गाड़ी कहाँ है। योजना में है।',
+  'Start with your own fleet': 'अपनी गाड़ियों के साथ शुरू करें', 'Open the demo with sample data, or create your account and start the free 30 days.': 'नमूना डेटा के साथ डेमो खोलें, या खाता बनाकर 30 दिन मुफ़्त शुरू करें।',
+  'Your fleet, on one screen.': 'आपकी गाड़ियाँ, एक स्क्रीन पर।', 'Fleet scheduling for transport companies in India.': 'भारत की ट्रांसपोर्ट कंपनियों के लिए फ़्लीट शेड्यूलिंग।', 'Skip': 'छोड़ें',
+  'Privacy': 'गोपनीयता', 'Terms': 'शर्तें',
+  'Create your account': 'अपना खाता बनाएँ', 'Create a company account': 'कंपनी खाता बनाएँ', 'Create account': 'खाता बनाएँ', 'I have an account': 'मेरा खाता है', 'Welcome back.': 'फिर से स्वागत है।',
+  'Continue with Google': 'Google से जारी रखें', 'or': 'या', 'Company name': 'कंपनी का नाम', 'Email': 'ईमेल', 'Password': 'पासवर्ड', 'Name your company': 'अपनी कंपनी का नाम बताएँ',
+  'Continue': 'आगे बढ़ें', 'This is the fleet you will manage here.': 'यही वह फ़्लीट है जिसे आप यहाँ संभालेंगे।',
 });
+const IC = {
+  car: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 9h10M7 14h4"/></svg>',
+  road: '<svg viewBox="0 0 24 24"><path d="M5 19 9 5m6 0 4 14M12 6v2m0 4v2m0 4v2"/></svg>',
+  doc: '<svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>',
+  sign: '<svg viewBox="0 0 24 24"><path d="M5 20h14M6 15l9-9 3 3-9 9H6z"/></svg>',
+  user: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>',
+  load: '<svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg>',
+};
+const featureCard = (ic, t, d) => `<div class="ln-card card sec"><div class="ic">${IC[ic]}</div><h3>${t}</h3><p>${d}</p></div>`;
+const landingHtml = () => `
+<header class="ln-top"><div class="ln-wrap"><div class="ln-brand"><span class="logo"><svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></span>dbeat</div>
+  <div class="acts"><button type="button" class="btn ghost sm" data-a="in">Sign in</button><button type="button" class="btn sm hide-s" data-a="up">Start free trial</button></div></div></header>
+<main class="ln-wrap">
+  <section class="ln-hero">
+    <div>
+      <h1 class="rv" style="--d:.05s">See every vehicle. Know which ones earn.</h1>
+      <p class="lead rv" style="--d:.15s">dbeat shows your whole fleet on one screen: fuel, papers, driver and trip. It separates trips that earn money from empty runs, so you can see how much time each vehicle spends running empty.</p>
+      <div class="ln-cta rv" style="--d:.25s"><button type="button" class="btn" data-a="up">Start free trial</button><button type="button" class="btn outline" data-a="demo">Try the demo</button></div>
+      <p class="ln-note rv" style="--d:.32s">Free for 30 days. No card needed.</p>
+      <p class="ln-note rv" style="--d:.36s;margin-top:4px">Works in English and Hindi.</p>
+    </div>
+    <div class="ln-mock card rv" style="--d:.2s" aria-hidden="true">
+      <div class="mk-head">Today<span>Sample data</span></div>
+      <div class="mk-row" style="--c:var(--earn)"><div class="mk-top"><div><b>Van 01 · Omar</b><small>Conference shuttle</small></div><span class="mk-pill">Earning</span></div><div class="mk-fuel"><i style="width:72%"></i></div></div>
+      <div class="mk-row" style="--c:var(--empty)"><div class="mk-top"><div><b>Truck 06 · Ravi</b><small>Back to the depot</small></div><span class="mk-pill">Empty run</span></div><div class="mk-fuel"><i style="width:41%"></i></div></div>
+      <div class="mk-row" style="--c:var(--ok);margin-bottom:0"><div class="mk-top"><div><b>Sedan 02 · Chen</b><small>Next: 4 PM</small></div><span class="mk-pill">Parked</span></div><div class="mk-fuel"><i style="width:38%"></i></div></div>
+    </div>
+  </section>
+  <section class="ln-sec"><div class="sec"><h2>What dbeat does</h2><p class="sub">The things a fleet owner checks every day, in one place.</p></div>
+    <div class="ln-grid">
+      ${featureCard('car', 'Every vehicle at a glance', 'Fuel, papers, driver and current trip, together on one card for each vehicle.')}
+      ${featureCard('road', 'Earning or empty run', 'Each trip is marked as paid work or an empty run, with the time spent in each stage.')}
+      ${featureCard('doc', 'Papers that do not run out quietly', 'Insurance, registration and inspection dates. A colour shows when one is close to expiring or already expired.')}
+      ${featureCard('sign', 'Hire contracts', 'See which trips are still waiting for the hire papers from the company, and which are signed and ready.')}
+      ${featureCard('user', 'Drivers and their records', 'Licence, ID and home address for every driver, with a note when an ID has been checked.')}
+      ${featureCard('load', 'Cargo and people', 'Trucks with load limits. Vans, cars and minibuses with seats.')}
+    </div></section>
+  <section class="ln-sec"><div class="sec"><h2>How it works</h2></div><div style="height:22px"></div>
+    <div class="ln-steps">
+      <div class="ln-step card sec"><h3>Add your vehicles and drivers</h3><p>Enter each vehicle with its type, fuel and papers. Add your drivers with their licence details.</p></div>
+      <div class="ln-step card sec"><h3>Plan the day</h3><p>Make trips and give each one a driver and a vehicle that fits the load.</p></div>
+      <div class="ln-step card sec"><h3>Follow each trip</h3><p>Mark pickup, loaded, return and the end of the trip, and see earning time and empty time add up.</p></div>
+    </div></section>
+  <section class="ln-sec" style="padding-top:8px"><div class="ln-next card sec"><span class="tag">Coming next</span><p>Live location from your GPS trackers, so you can see where each vehicle is. In planning.</p></div></section>
+  <section class="ln-sec"><div class="ln-final sec"><h2>Start with your own fleet</h2><p>Open the demo with sample data, or create your account and start the free 30 days.</p>
+    <div class="ln-cta"><button type="button" class="btn" data-a="up">Start free trial</button><button type="button" class="btn outline" data-a="demo">Try the demo</button></div></div></section>
+</main>
+<footer class="ln-wrap ln-foot"><span>dbeat.co.in</span><span><a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></span></footer>`;
+function showLanding() {
+  $('.app').hidden = true; $('#signout').hidden = true; authEl.hidden = true; authEl.innerHTML = '';
+  landing.className = ''; landing.hidden = false; landing.innerHTML = landingHtml(); window.scrollTo(0, 0);
+  if ('IntersectionObserver' in window) {
+    landing.classList.add('anim');
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .12 });
+    landing.querySelectorAll('.sec').forEach(el => io.observe(el));
+  }
+}
+const splashHtml = () => `<div class="sp-stack">
+  <div class="sp-mark"><svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></div>
+  <div class="sp-word">dbeat</div>
+  <div class="sp-roadwrap"><svg viewBox="0 0 480 110"><path class="sp-base" d="M20 80 C 140 80, 180 20, 300 40 S 420 70, 460 30"/><path class="sp-line" pathLength="1" d="M20 80 C 140 80, 180 20, 300 40 S 420 70, 460 30"/><circle class="sp-pin" cx="460" cy="30" r="7"/></svg><div class="sp-dot"></div></div>
+  <p class="sp-tag">Your fleet, on one screen.</p>
+  <p class="sp-sub">Fleet scheduling for transport companies in India.</p></div>
+  <div class="sp-bar"></div><button type="button" class="sp-skip">Skip</button>`;
+function runSplash(done) {
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  splashEl.className = ''; splashEl.innerHTML = splashHtml(); splashEl.hidden = false;
+  let over = false, timer = 0;
+  const end = () => {
+    if (over) return; over = true; clearTimeout(timer); document.removeEventListener('keydown', onKey);
+    splashEl.classList.add('out');
+    setTimeout(() => { splashEl.hidden = true; splashEl.innerHTML = ''; if (done) done(); }, 500);
+  };
+  const onKey = e => { if (e.key === 'Escape' || e.key === 'Enter') end(); };
+  document.addEventListener('keydown', onKey);
+  splashEl.addEventListener('click', e => { if (e.target.closest('.sp-skip')) { e.stopPropagation(); track('splash_skipped'); end(); } });
+  timer = setTimeout(end, reduce ? 1200 : 3000);
+}
+function startLanding(withSplash) {
+  showLanding(); track('landing_viewed');
+  let seen = '1'; try { seen = sessionStorage.getItem('dbeat.splash'); } catch {}
+  if (withSplash && !seen) {
+    try { sessionStorage.setItem('dbeat.splash', '1'); } catch {}
+    landing.classList.add('pre');
+    runSplash(() => landing.classList.remove('pre'));
+  }
+}
+
 async function init() {
-  if (!sb) return enterDemo();
+  if (!sb) return startLanding(true);
   const { data: { session } } = await sb.auth.getSession();
-  if (session) openCompany(); else showAuth('in');
+  if (session) openCompany(); else startLanding(true);
 }
 
 /* ---- Events ---- */
