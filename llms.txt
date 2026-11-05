@@ -9,7 +9,7 @@ dbeat is an early-stage product. Each company signs up with its own account and 
 - Fleet view: every vehicle with fuel level, vehicle documents (insurance, registration, inspection), driver nickname and current trip state.
 - Earning vs empty run: each trip is marked as paid work or an empty run, with the time spent in each phase (pickup, loaded, return, empty).
 - Hire contracts: tracks whether the logistics company's hire papers for a trip are waiting or received.
-- Vehicle types: people carriers (seats) and cargo trucks (load capacity).
+- Vehicle types: passenger vehicles (seats) and cargo trucks (load capacity).
 - Drivers: licence, ID and home address records, with an ID-checked status.
 - Language: English and Hindi, switchable on any screen.
 

@@ -6,7 +6,7 @@ Fleet scheduling platform for transport companies. This repository holds the wor
 - Fleet view: each vehicle with fuel, vehicle documents, driver nickname and live trip state
 - Earning vs empty run tracking, with a time split per trip
 - Vehicle documents and hire contracts, each with its own status
-- Vehicle types for people and cargo, drivers with license and ID details
+- Vehicle types for passengers and cargo, drivers with license and ID details
 - English / Hindi switch
 
 ## Run it locally
