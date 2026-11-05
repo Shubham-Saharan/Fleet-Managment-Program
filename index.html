@@ -1236,8 +1236,7 @@ function runSplash(done) {
 }
 function startLanding(withSplash) {
   showLanding(); track('landing_viewed');
-  let seen = '1'; try { seen = sessionStorage.getItem('dbeat.splash'); } catch {}
-  if (withSplash && !seen) { try { sessionStorage.setItem('dbeat.splash', '1'); } catch {} runSplash(); }
+  if (withSplash) runSplash();
 }
 landing.addEventListener('click', e => {
   const q = e.target.closest('[data-faq]'); if (!q) return;
