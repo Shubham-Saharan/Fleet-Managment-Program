@@ -1029,7 +1029,7 @@ function showAuth(m = 'in', msg = '', isErr = false) {
   const up = m === 'up', co = m === 'company';
   authEl.innerHTML = `<div class="authbox card"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></span>dbeat</div>
     <h1>${co ? 'Name your company' : up ? 'Create your account' : 'Sign in'}</h1>
-    <p class="sub">${co ? 'This is the fleet you will manage here.' : up ? 'Free for 30 days. No card needed.' : 'Welcome back.'}</p>
+    <p class="sub">${co ? 'This is the fleet you will manage here.' : up ? 'Create an account for your company.' : 'Welcome back.'}</p>
     ${co ? '' : `<button type="button" class="btn outline cta gbtn" data-a="google"><svg viewBox="0 0 48 48"><path stroke="none" fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path stroke="none" fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path stroke="none" fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path stroke="none" fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>Continue with Google</button><div class="or"><span>or</span></div>`}
     <form id="authform" data-m="${m}">
       ${up || co ? '<label>Company name<input name="company" required maxlength="80" autocomplete="organization"></label>' : ''}
@@ -1111,9 +1111,9 @@ authEl.addEventListener('click', onAction);
 landing.addEventListener('click', onAction);
 /* ---- Splash and landing page (from the dbeat landing design) ---- */
 Object.assign(HI, {
-  'Sign in': 'साइन इन', 'Start free trial': 'मुफ़्त ट्रायल शुरू करें', 'Try the demo': 'डेमो देखें', 'Back to home': 'होम पर वापस',
+  'Sign in': 'साइन इन', 'Try the demo': 'डेमो देखें', 'Back to home': 'होम पर वापस',
   'Create your account': 'अपना खाता बनाएँ', 'Create a company account': 'कंपनी खाता बनाएँ', 'Create account': 'खाता बनाएँ', 'I have an account': 'मेरा खाता है', 'Welcome back.': 'फिर से स्वागत है।',
-  'Free for 30 days. No card needed.': '30 दिन मुफ़्त। कार्ड की ज़रूरत नहीं।',
+  'Create an account for your company.': 'अपनी कंपनी के लिए खाता बनाएँ।',
   'Continue with Google': 'Google से जारी रखें', 'or': 'या', 'Company name': 'कंपनी का नाम', 'Email': 'ईमेल', 'Password': 'पासवर्ड', 'Name your company': 'अपनी कंपनी का नाम बताएँ',
   'Continue': 'आगे बढ़ें', 'This is the fleet you will manage here.': 'यही वह फ़्लीट है जिसे आप यहाँ संभालेंगे।', 'Parked': 'खड़ी',
   'Fleet management platform': 'फ़्लीट मैनेजमेंट प्लेटफ़ॉर्म', 'Know every vehicle. Know what earns.': 'हर गाड़ी को जानें। जानें क्या कमाई कर रहा है।', 'Fleet scheduling for transport companies in India.': 'भारत की ट्रांसपोर्ट कंपनियों के लिए फ़्लीट शेड्यूलिंग।', 'Skip': 'छोड़ें',
@@ -1140,17 +1140,16 @@ Object.assign(HI, {
   'Vehicle papers': 'गाड़ी के कागज़ात', 'Inspection ends in 20 days': 'निरीक्षण 20 दिन में ख़त्म', 'Registration expired': 'पंजीकरण ख़त्म हो चुका', 'Insurance valid': 'बीमा मान्य', 'Soon': 'जल्द', 'Expired': 'ख़त्म', 'Valid': 'मान्य',
   'Coming next.': 'आगे आने वाला।', 'What we are working on. Dates are not fixed.': 'हम किस पर काम कर रहे हैं। तारीख़ें तय नहीं हैं।', 'Planned': 'योजना में',
   'Live GPS location': 'लाइव GPS लोकेशन', 'See where each vehicle is, from your own GPS trackers.': 'अपने GPS ट्रैकर से देखें कि हर गाड़ी कहाँ है।',
-  'Simple monthly plans': 'सरल मासिक प्लान', 'Paid plans after the free 30 days. You will see the price before any charge.': 'मुफ़्त 30 दिन के बाद पेड प्लान। कोई भी शुल्क लगने से पहले आपको कीमत दिखेगी।',
+  'Simple monthly plans': 'सरल मासिक प्लान', 'Paid plans are planned. You will see the price before any charge.': 'पेड प्लान की योजना है। कोई भी शुल्क लगने से पहले आपको कीमत दिखेगी।',
   'Frequently asked questions.': 'अक्सर पूछे जाने वाले सवाल।', 'Didn’t find an answer? Try the demo and see for yourself.': 'जवाब नहीं मिला? डेमो खोलकर ख़ुद देखें।',
   'How quickly can I start?': 'मैं कितनी जल्दी शुरू कर सकता हूँ?', 'Create an account, name your company and add your first vehicle in a few minutes.': 'खाता बनाएँ, कंपनी का नाम दें और कुछ ही मिनटों में अपनी पहली गाड़ी जोड़ें।',
   'Which vehicles can I add?': 'मैं कौन सी गाड़ियाँ जोड़ सकता हूँ?', 'Trucks with a load limit, and vans, cars and minibuses with seats.': 'वज़न की सीमा वाले ट्रक, और सीटों वाली वैन, कार और मिनीबस।',
   'Does dbeat show vehicles live on a map?': 'क्या dbeat गाड़ियाँ नक़्शे पर लाइव दिखाता है?', 'Not yet. Live GPS location is planned. Today you mark pickup, loaded, return and the end of each trip in the app.': 'अभी नहीं। लाइव GPS लोकेशन योजना में है। आज आप ऐप में पिकअप, माल लदा, वापसी और ट्रिप का अंत दर्ज करते हैं।',
-  'Is there a free trial?': 'क्या मुफ़्त ट्रायल है?', 'Yes. New accounts get 30 days free, no card needed.': 'हाँ। नए खाते को 30 दिन मुफ़्त मिलते हैं, कार्ड की ज़रूरत नहीं।',
-  'What does it cost after the trial?': 'ट्रायल के बाद इसकी कीमत क्या है?', 'Paid plans are not ready yet. We will show you the price before any charge.': 'पेड प्लान अभी तैयार नहीं हैं। कोई भी शुल्क लगने से पहले हम आपको कीमत दिखाएँगे।',
+  'What does dbeat cost?': 'dbeat की कीमत क्या है?', 'Paid plans are not ready yet. We will show you the price before any charge.': 'पेड प्लान अभी तैयार नहीं हैं। कोई भी शुल्क लगने से पहले हम आपको कीमत दिखाएँगे।',
   'Is my data separate from other companies?': 'क्या मेरा डेटा दूसरी कंपनियों से अलग है?', 'Yes. Each company sees only its own vehicles, drivers and trips.': 'हाँ। हर कंपनी सिर्फ़ अपनी गाड़ियाँ, ड्राइवर और ट्रिप देखती है।',
   'Does it work in Hindi?': 'क्या यह हिंदी में चलता है?', 'Yes. Switch between English and Hindi on any screen.': 'हाँ। किसी भी स्क्रीन पर अंग्रेज़ी और हिंदी के बीच बदलें।',
   'Where is my data stored?': 'मेरा डेटा कहाँ रखा जाता है?', 'Accounts and fleet data are stored with Supabase on servers in Ireland. See the Privacy Policy for details.': 'खाते और फ़्लीट का डेटा आयरलैंड के सर्वरों पर Supabase के पास रखा जाता है। विवरण के लिए गोपनीयता नीति देखें।',
-  'See your whole fleet on one screen, free for 30 days.': 'अपनी पूरी फ़्लीट एक स्क्रीन पर देखें, 30 दिन मुफ़्त।',
+  'See your whole fleet on one screen.': 'अपनी पूरी फ़्लीट एक स्क्रीन पर देखें।',
   'Product': 'प्रोडक्ट', 'Account': 'खाता', 'Legal': 'क़ानूनी', 'Terms of Service': 'सेवा की शर्तें', 'Privacy Policy': 'गोपनीयता नीति', '© 2026 dbeat. All rights reserved.': '© 2026 dbeat. सर्वाधिकार सुरक्षित।',
 });
 const lp = on => document.body.classList.toggle('lp', on);
@@ -1158,8 +1157,7 @@ const FAQS = [
   ['How quickly can I start?', 'Create an account, name your company and add your first vehicle in a few minutes.'],
   ['Which vehicles can I add?', 'Trucks with a load limit, and vans, cars and minibuses with seats.'],
   ['Does dbeat show vehicles live on a map?', 'Not yet. Live GPS location is planned. Today you mark pickup, loaded, return and the end of each trip in the app.'],
-  ['Is there a free trial?', 'Yes. New accounts get 30 days free, no card needed.'],
-  ['What does it cost after the trial?', 'Paid plans are not ready yet. We will show you the price before any charge.'],
+  ['What does dbeat cost?', 'Paid plans are not ready yet. We will show you the price before any charge.'],
   ['Is my data separate from other companies?', 'Yes. Each company sees only its own vehicles, drivers and trips.'],
   ['Does it work in Hindi?', 'Yes. Switch between English and Hindi on any screen.'],
   ['Where is my data stored?', 'Accounts and fleet data are stored with Supabase on servers in Ireland. See the Privacy Policy for details.'],
@@ -1172,11 +1170,10 @@ const landingHtml = () => `<div class="dl-page">
 <header class="dl-hdr"><nav class="dl-nav"><a href="#dl-features">Features</a><a href="#dl-how">How it works</a><a href="#dl-faq">FAQ</a></nav>
   <span class="dl-logo"><i></i>dbeat</span>
   <div class="dl-right"><span class="dl-lang" role="group" aria-label="Language"><button type="button" data-lang="en" class="${lang === 'en' ? 'on' : ''}">EN</button><button type="button" data-lang="hi" class="${lang === 'hi' ? 'on' : ''}">हिं</button></span>
-  <button type="button" class="dl-btn sm grey" data-a="in">Sign in</button><button type="button" class="dl-btn sm" data-a="up">Start free trial</button></div></header>
+  <button type="button" class="dl-btn sm grey" data-a="in">Sign in</button><button type="button" class="dl-btn sm" data-a="up">Create account</button></div></header>
 <section class="dl-hero"><h1>Feel your fleet’s heartbeat.</h1>
   <p class="lead">See every vehicle, what it carries and whether the trip earns. Schedule trips, track papers and keep driver records in one place.</p>
-  <div class="dl-btns"><button type="button" class="dl-btn" data-a="up">Start free trial</button><button type="button" class="dl-btn grey" data-a="demo">Try the demo</button></div>
-  <p class="dl-note">Free for 30 days. No card needed.</p></section>
+  <div class="dl-btns"><button type="button" class="dl-btn" data-a="up">Create account</button><button type="button" class="dl-btn grey" data-a="demo">Try the demo</button></div></section>
 <div class="dl-band"><div class="dl-mock" aria-hidden="true"><div class="mk-head">Today<span>Sample data</span></div>
   ${mkRow('#3f9a4a', 'Van 01 · Omar', 'Conference shuttle', 'Earning', 72)}${mkRow('#a07a3c', 'Truck 06 · Ravi', 'Back to the depot', 'Empty run', 41)}${mkRow('#6b6b64', 'Sedan 02 · Chen', 'Next: 4 PM', 'Parked', 38)}</div></div>
 <section class="dl-sec dl-tint" id="dl-features"><h2>Made for fleet owners.</h2><p class="sub">Three things you can check in seconds.</p>
@@ -1188,12 +1185,12 @@ const landingHtml = () => `<div class="dl-page">
   <div class="dl-art"><div class="dl-mock" aria-hidden="true"><div class="mk-head">Vehicle papers<span>Sample data</span></div>
   ${mkRow('#3f9a4a', 'Van 01 · Insurance', 'Insurance valid', 'Valid')}${mkRow('#b7791f', 'Van 01 · Inspection', 'Inspection ends in 20 days', 'Soon')}${mkRow('#c0392b', 'Truck 06 · Registration', 'Registration expired', 'Expired')}</div></div></section>
 <section class="dl-sec dl-tint"><h2>Coming next.</h2><p class="sub">What we are working on. Dates are not fixed.</p>
-  <div class="dl-cards">${stat('Planned', 'Live GPS location', '', 'See where each vehicle is, from your own GPS trackers.')}${stat('Planned', 'Simple monthly plans', '', 'Paid plans after the free 30 days. You will see the price before any charge.')}</div></section>
+  <div class="dl-cards">${stat('Planned', 'Live GPS location', '', 'See where each vehicle is, from your own GPS trackers.')}${stat('Planned', 'Simple monthly plans', '', 'Paid plans are planned. You will see the price before any charge.')}</div></section>
 <section class="dl-faq" id="dl-faq"><div><h2>Frequently asked questions.</h2><p class="help">Didn’t find an answer? Try the demo and see for yourself.</p></div>
   <div class="dl-qs">${FAQS.map(([q, a], i) => `<div class="dl-q${i === 0 ? ' open' : ''}"><button type="button" data-faq aria-expanded="${i === 0}"><span class="sg">${i === 0 ? '−' : '+'}</span><span>${q}</span></button><div class="a">${a}</div></div>`).join('')}</div></section>
-<section class="dl-cta"><div><b>See your whole fleet on one screen, free for 30 days.</b><div class="dl-btns" style="width:auto;max-width:none;background:none;padding:0;margin-top:22px"><button type="button" class="dl-btn white" data-a="up">Start free trial</button><button type="button" class="dl-btn ghost" data-a="demo">Try the demo</button></div></div></section>
+<section class="dl-cta"><div><b>See your whole fleet on one screen.</b><div class="dl-btns" style="width:auto;max-width:none;background:none;padding:0;margin-top:22px"><button type="button" class="dl-btn white" data-a="up">Create account</button><button type="button" class="dl-btn ghost" data-a="demo">Try the demo</button></div></div></section>
 <footer class="dl-foot"><div style="display:flex;flex-direction:column;gap:12px"><span class="lg">● dbeat</span><span>Fleet scheduling for transport companies in India.</span></div>
-  <div class="cols"><div><span>Product</span><a href="#dl-features">Features</a><a href="#dl-how">How it works</a><a href="#dl-faq">FAQ</a></div><div><span>Account</span><button type="button" class="lk" data-a="in">Sign in</button><button type="button" class="lk" data-a="up">Start free trial</button><button type="button" class="lk" data-a="demo">Try the demo</button></div><div><span>Legal</span><a href="/terms">Terms of Service</a><a href="/privacy">Privacy Policy</a></div></div></footer>
+  <div class="cols"><div><span>Product</span><a href="#dl-features">Features</a><a href="#dl-how">How it works</a><a href="#dl-faq">FAQ</a></div><div><span>Account</span><button type="button" class="lk" data-a="in">Sign in</button><button type="button" class="lk" data-a="up">Create account</button><button type="button" class="lk" data-a="demo">Try the demo</button></div><div><span>Legal</span><a href="/terms">Terms of Service</a><a href="/privacy">Privacy Policy</a></div></div></footer>
 <div class="dl-copy">© 2026 dbeat. All rights reserved.</div></div>`;
 function showLanding() {
   $('.app').hidden = true; $('#signout').hidden = true; authEl.hidden = true; authEl.innerHTML = '';
