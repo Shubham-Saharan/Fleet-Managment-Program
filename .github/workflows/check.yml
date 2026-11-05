@@ -29,11 +29,10 @@ jobs:
           for f in index.html robots.txt llms.txt sitemap.xml supabase/schema.sql; do
             test -s "$f" || { echo "missing or empty: $f"; exit 1; }
           done
-      - name: Contact email filled in (production only)
-        if: github.ref == 'refs/heads/main'
+      - name: No placeholder text in the legal pages
         run: |
           if grep -n "CONTACT_EMAIL" privacy.html terms.html; then
-            echo "Replace CONTACT_EMAIL in privacy.html and terms.html before releasing."; exit 1
+            echo "A CONTACT_EMAIL placeholder is still in the legal pages."; exit 1
           fi
       - name: No secret keys in the code
         run: |
