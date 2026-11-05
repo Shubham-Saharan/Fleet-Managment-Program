@@ -29,6 +29,12 @@ jobs:
           for f in index.html robots.txt llms.txt sitemap.xml supabase/schema.sql; do
             test -s "$f" || { echo "missing or empty: $f"; exit 1; }
           done
+      - name: Contact email filled in (production only)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          if grep -n "CONTACT_EMAIL" privacy.html terms.html; then
+            echo "Replace CONTACT_EMAIL in privacy.html and terms.html before releasing."; exit 1
+          fi
       - name: No secret keys in the code
         run: |
           if grep -rEn "service_role|sb_secret_|eyJhbGciOi[A-Za-z0-9_-]{20,}" index.html supabase; then

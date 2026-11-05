@@ -20,6 +20,8 @@ Small and mid-size fleet owners and dispatchers running cargo trucks, vans, cars
 ## Pages
 
 - [App and sign-in](https://dbeat.co.in/): sign up for a company account, sign in, or open the demo.
+- [Privacy Policy](https://dbeat.co.in/privacy): what data dbeat collects and how it is used.
+- [Terms of Service](https://dbeat.co.in/terms): the rules for using dbeat.
 
 ## Not yet available
 
