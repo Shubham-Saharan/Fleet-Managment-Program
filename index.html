@@ -708,7 +708,7 @@ function setLang(l) {
   document.documentElement.lang = lang; track('language_' + lang); try { if (window.clarity) window.clarity('set', 'language', lang); } catch {}
   document.querySelectorAll('[data-lang]').forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
   close(); render();
-  if (landing && !landing.hidden) { const y = scrollY; showLanding(); scrollTo(0, y); } else if (authEl && !authEl.hidden) showAuth(authMode);
+  if (landing && !landing.hidden) { const y = scrollY; showLanding(); scrollTo(0, y); } else if (authEl && !authEl.hidden) { if (authMode === 'pay') showPaywall(payCo); else showAuth(authMode); }
 }
 new MutationObserver(ms => { if (lang === 'hi') ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1 || n.nodeType === 3) hiNode(n); })); }).observe(document.body, { childList: true, subtree: true });
 
@@ -1020,8 +1020,8 @@ const setSync = msg => { syncEl.hidden = !msg; syncEl.textContent = msg || ''; }
 async function pushCloud() {
   clearTimeout(saveTimer); saveTimer = 0;
   if (!cloud) return;
-  const { error } = await sb.from('fleet_state').update({ data: db, updated_at: new Date().toISOString() }).eq('company_id', companyId);
-  setSync(error ? 'Not saved. Check your internet.' : '');
+  const { data, error } = await sb.from('fleet_state').update({ data: db, updated_at: new Date().toISOString() }).eq('company_id', companyId).select('company_id');
+  setSync(error || !data?.length ? 'Not saved. Check your internet and your subscription.' : '');
 }
 let authMode = 'in';
 function showAuth(m = 'in', msg = '', isErr = false) {
@@ -1048,6 +1048,32 @@ function enterDemo() {
   try { db = JSON.parse(localStorage.getItem(KEY)) || seed(); } catch { db = seed(); }
   hideAuth(); render();
 }
+const isPaid = co => !!(co && co.paid_until && new Date(co.paid_until) > new Date());
+const getCompany = async () => (await sb.from('companies').select('name,subscription_status,paid_until').eq('id', companyId).single()).data;
+let payCo = null;
+function showPaywall(co, msg = '', isErr = false, waiting = false) {
+  payCo = co; authMode = 'pay'; lp(false); landing.hidden = true; $('.app').hidden = true; $('#signout').hidden = true; authEl.hidden = false;
+  authEl.innerHTML = `<div class="authbox card"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></span>dbeat</div>
+    <h1>Subscribe to start</h1>
+    <p class="sub"><b>${esc(co?.name || '')}</b></p>
+    <p class="sub">Your account is ready. Subscribe to start using dbeat.</p>
+    <p class="sub">You will see the price on the next screen before you pay.</p>
+    <p class="amsg${isErr ? ' err' : ''}"></p>
+    ${waiting ? '' : `<button type="button" class="btn cta" data-a="subscribe">Subscribe</button>
+    <div class="alt"><button type="button" class="btn ghost sm" data-a="paycheck">I have paid, check again</button><button type="button" class="btn outline sm" data-a="signout">Sign out</button></div>`}
+    <p class="legal"><a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></p></div>`;
+  $('.amsg', authEl).textContent = msg;
+}
+async function afterCheckout() {
+  history.replaceState(null, '', location.pathname);
+  showPaywall(null, 'Confirming your payment. This takes a few seconds.', false, true);
+  for (let i = 0; i < 10; i++) {
+    const co = await getCompany();
+    if (isPaid(co)) { track('paid'); return openCompany(); }
+    await new Promise(r => setTimeout(r, 3000));
+  }
+  openCompany();
+}
 async function openCompany() {
   const { data: m, error: e1 } = await sb.from('members').select('company_id').limit(1);
   if (e1) return showAuth('in', 'Could not reach the server. Try again.', true);
@@ -1060,6 +1086,8 @@ async function openCompany() {
     return openCompany();
   }
   companyId = m[0].company_id;
+  const co = await getCompany();
+  if (!isPaid(co)) return showPaywall(co);
   const { data: f, error } = await sb.from('fleet_state').select('data').eq('company_id', companyId).single();
   if (error) return showAuth('in', 'Could not load your data. Try again.', true);
   const fresh = !(f.data && f.data.vehicles);
@@ -1095,7 +1123,7 @@ authEl.addEventListener('submit', async e => {
     track('signed_in'); openCompany();
   } catch { fail('Something went wrong. Check your internet and try again.'); }
 });
-const onAction = e => {
+const onAction = async e => {
   const b = e.target.closest('[data-a]'); if (!b) return;
   e.stopPropagation();
   if (b.dataset.a === 'home') showLanding();
@@ -1105,13 +1133,30 @@ const onAction = e => {
     sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin } }).then(({ error }) => {
       if (error) { b.disabled = false; const msg = $('.amsg', authEl); if (msg) { msg.className = 'amsg err'; msg.textContent = 'Google sign-in is not available right now. Use email instead.'; } }
     });
-  } else { track('cta_' + b.dataset.a); showAuth(b.dataset.a); }
+  } else if (b.dataset.a === 'subscribe') {
+    track('subscribe_clicked'); b.disabled = true;
+    const fail = t => { b.disabled = false; const msg = $('.amsg', authEl); if (msg) { msg.className = 'amsg err'; msg.textContent = t; } };
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      const r = await fetch('/api/checkout', { method: 'POST', headers: { Authorization: 'Bearer ' + session.access_token } });
+      const out = await r.json().catch(() => ({}));
+      if (out.url) location.href = out.url; else fail(out.error || 'Could not start checkout. Try again.');
+    } catch { fail('Could not start checkout. Check your internet and try again.'); }
+  } else if (b.dataset.a === 'paycheck') {
+    const co = await getCompany();
+    if (isPaid(co)) openCompany(); else showPaywall(co, 'We have not received your payment yet. It can take a minute. Try again shortly.');
+  } else if (b.dataset.a === 'signout') signOut();
+  else { track('cta_' + b.dataset.a); showAuth(b.dataset.a); }
 };
 authEl.addEventListener('click', onAction);
 landing.addEventListener('click', onAction);
 /* ---- Splash and landing page (from the dbeat landing design) ---- */
 Object.assign(HI, {
   'Sign in': 'साइन इन', 'Try the demo': 'डेमो देखें', 'Back to home': 'होम पर वापस',
+  'Subscribe to start': 'शुरू करने के लिए सब्सक्राइब करें', 'Your account is ready. Subscribe to start using dbeat.': 'आपका खाता तैयार है। dbeat इस्तेमाल करने के लिए सब्सक्राइब करें।',
+  'You will see the price on the next screen before you pay.': 'भुगतान से पहले अगली स्क्रीन पर आपको कीमत दिखेगी।', 'Subscribe': 'सब्सक्राइब करें', 'I have paid, check again': 'मैंने भुगतान कर दिया, फिर जाँचें', 'Sign out': 'साइन आउट',
+  'Confirming your payment. This takes a few seconds.': 'आपके भुगतान की पुष्टि हो रही है। इसमें कुछ सेकंड लगते हैं।', 'We have not received your payment yet. It can take a minute. Try again shortly.': 'हमें अभी भुगतान नहीं मिला। इसमें एक मिनट लग सकता है। थोड़ी देर बाद फिर कोशिश करें।',
+  'Could not start checkout. Try again.': 'चेकआउट शुरू नहीं हो सका। फिर कोशिश करें।', 'Not saved. Check your internet and your subscription.': 'सेव नहीं हुआ। इंटरनेट और सब्सक्रिप्शन जाँचें।',
   'Create your account': 'अपना खाता बनाएँ', 'Create a company account': 'कंपनी खाता बनाएँ', 'Create account': 'खाता बनाएँ', 'I have an account': 'मेरा खाता है', 'Welcome back.': 'फिर से स्वागत है।',
   'Create an account for your company.': 'अपनी कंपनी के लिए खाता बनाएँ।',
   'Continue with Google': 'Google से जारी रखें', 'or': 'या', 'Company name': 'कंपनी का नाम', 'Email': 'ईमेल', 'Password': 'पासवर्ड', 'Name your company': 'अपनी कंपनी का नाम बताएँ',
@@ -1249,7 +1294,7 @@ landing.addEventListener('click', e => {
 async function init() {
   if (!sb) return startLanding(true);
   const { data: { session } } = await sb.auth.getSession();
-  if (session) openCompany(); else startLanding(true);
+  if (session) { if (new URLSearchParams(location.search).get('billing') === 'return') afterCheckout(); else openCompany(); } else startLanding(true);
 }
 
 /* ---- Events ---- */

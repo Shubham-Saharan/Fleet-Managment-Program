@@ -24,6 +24,10 @@ jobs:
           require('fs').writeFileSync('/tmp/app.js', scripts[scripts.length - 1]);
           "
           node --check /tmp/app.js
+      - name: Server code has no syntax errors
+        run: |
+          node --check api/checkout.js
+          node --check api/dodo-webhook.js
       - name: Required files exist
         run: |
           for f in index.html robots.txt llms.txt sitemap.xml supabase/schema.sql; do
