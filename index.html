@@ -1293,6 +1293,9 @@ landing.addEventListener('click', e => {
 
 async function init() {
   if (!sb) return startLanding(true);
+  // Google or Supabase can send the person back with an error in the address; show it instead of silently landing on the home page
+  const problem = new URLSearchParams(location.search).get('error_description') || new URLSearchParams(location.hash.slice(1)).get('error_description');
+  if (problem) { history.replaceState(null, '', location.pathname); return showAuth('in', 'Sign-in problem: ' + problem, true); }
   const { data: { session } } = await sb.auth.getSession();
   if (session) { if (new URLSearchParams(location.search).get('billing') === 'return') afterCheckout(); else openCompany(); } else startLanding(true);
 }
