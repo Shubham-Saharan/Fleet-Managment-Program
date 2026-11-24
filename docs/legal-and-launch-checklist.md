@@ -2,6 +2,9 @@
 
 The policies on the website are drafts written to be accurate about how dbeat works today. They are not legal advice.
 Items below need a person (owner or lawyer), not code.
+The live to-do list, with dates and triggers, is `docs/compliance-calendar.md` (a monthly GitHub issue repeats it). Why each item exists: `docs/india-law-map.md`.
+
+**Address:** the pages show Masters' Union's DLF Cyber Park address as a correspondence address, with a line saying dbeat is independent of Masters' Union. Do not release the pages until Masters' Union has agreed in writing. A registered office also needs the owner's no-objection consent.
 
 ## Must do before real customers
 - [ ] A lawyer reads Terms, Privacy Policy, Cookie Policy, DPA, Copyright page. Ask specifically about: DPDP Act obligations and the DPDP Rules, limits of liability, governing-law and court wording, GST on subscriptions.

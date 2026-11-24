@@ -1078,6 +1078,7 @@ function showAuth(m = 'in', msg = '', isErr = false) {
       <button class="btn cta" type="submit">${co ? 'Continue' : up ? 'Create account' : 'Sign in'}</button>
     </form>
     <div class="alt">${co ? '' : `<button type="button" class="btn ghost sm" data-a="${up ? 'in' : 'up'}">${up ? 'I have an account' : 'Create a company account'}</button>`}<button type="button" class="btn outline sm" data-a="demo">Try the demo</button></div>
+    ${co ? '' : '<p class="legal">By continuing, you agree to the Terms of Service and Privacy Policy linked below.</p>'}
     <p class="legal"><button type="button" class="linkbtn" data-a="home">Back to home</button> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></p></div>`;
   $('.amsg', authEl).textContent = msg;
 }
@@ -1193,6 +1194,7 @@ landing.addEventListener('click', onAction);
 /* ---- Splash and landing page (from the dbeat landing design) ---- */
 Object.assign(HI, {
   'Sign in': 'साइन इन', 'Try the demo': 'डेमो देखें', 'Back to home': 'होम पर वापस',
+  'By continuing, you agree to the Terms of Service and Privacy Policy linked below.': 'जारी रखकर आप नीचे दिए गए सेवा की शर्तों और गोपनीयता नीति से सहमत होते हैं।',
   'We use Microsoft Clarity to see how dbeat is used, so we can fix confusing screens. It sets cookies and records how people use the pages. Allow it?': 'हम यह देखने के लिए Microsoft Clarity इस्तेमाल करते हैं कि dbeat कैसे चलाया जाता है, ताकि उलझाने वाली स्क्रीन ठीक कर सकें। यह कुकी रखता है और पेज के इस्तेमाल को रिकॉर्ड करता है। अनुमति दें?',
   'Allow analytics': 'एनालिटिक्स की अनुमति दें', 'No thanks': 'नहीं, धन्यवाद', 'Cookie Policy': 'कुकी नीति', 'Cookie settings': 'कुकी सेटिंग',
   'Copyright and Takedown': 'कॉपीराइट और टेकडाउन', 'Data Processing Agreement': 'डेटा प्रोसेसिंग समझौता', 'Security': 'सुरक्षा', 'Third-party notices': 'थर्ड-पार्टी सूचनाएँ',

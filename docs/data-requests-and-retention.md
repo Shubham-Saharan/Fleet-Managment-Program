@@ -8,7 +8,7 @@ Matches what the public Privacy Policy and Data Processing Agreement promise. Ch
 | Account and fleet data | While the account is active | Delete on closure request within 30 days |
 | Backups (only if Supabase Pro backups are on) | Provider cycle | Must age out within 30 days after deletion |
 | Billing records | As long as tax/accounting law requires | Then delete |
-| Server and security logs | Days (provider default) | Auto-expire |
+| Server and security logs | Days today (provider default). **Needs to become 1 year by 13 May 2027** (DPDP Rule 6(1)(e)) and 180 days in India now (CERT-In) | Choose a log store before then; see `docs/compliance-calendar.md` |
 | Analytics (Clarity) | Provider setting; only with consent | Reduce retention in Clarity settings |
 | Inactive accounts (no sign-in, no active subscription for 12 months) | 12 months | Email warning, then delete 30 days later |
 | Suspended-for-nonpayment accounts | 30 days minimum | Then delete if unpaid |

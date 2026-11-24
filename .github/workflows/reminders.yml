@@ -1,0 +1,29 @@
+name: Monthly compliance reminder
+
+# Opens a GitHub issue on the 1st of each month so legal and security tasks are not forgotten.
+# GitHub emails you when the issue opens. Scheduled runs only work from the default branch (main).
+on:
+  schedule:
+    - cron: '0 4 1 * *'   # 04:00 UTC = 09:30 India time
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Open the monthly issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          days=$(( ( $(date -d 2027-05-13 +%s) - $(date +%s) ) / 86400 ))
+          {
+            echo "**Days until the main DPDP duties start (13 May 2027): $days**"
+            echo
+            cat docs/compliance-calendar.md
+          } > body.md
+          gh issue create --title "Legal and security review $(date +%Y-%m)" --body-file body.md
