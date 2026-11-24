@@ -21,7 +21,12 @@ Small and mid-size fleet owners and dispatchers running cargo trucks, vans, cars
 
 - [App and sign-in](https://dbeat.co.in/): sign up for a company account, sign in, or open the demo.
 - [Privacy Policy](https://dbeat.co.in/privacy): what data dbeat collects and how it is used.
-- [Terms of Service](https://dbeat.co.in/terms): the rules for using dbeat.
+- [Terms of Service](https://dbeat.co.in/terms): the rules for using dbeat, including licence, ownership and subscriptions.
+- [Cookie Policy](https://dbeat.co.in/cookies): the cookies and browser storage dbeat uses.
+- [Copyright and Takedown](https://dbeat.co.in/copyright): how copyright complaints are handled.
+- [Data Processing Agreement](https://dbeat.co.in/dpa): how dbeat processes driver and fleet data for customers.
+- [Security](https://dbeat.co.in/security): how data is protected and how to report a vulnerability.
+- [Third-party notices](https://dbeat.co.in/notices): open-source components and licences.
 
 ## Not yet available
 

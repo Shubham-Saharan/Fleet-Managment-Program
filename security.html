@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Security | dbeat</title>
+<meta name="description" content="How dbeat protects your data, and how to report a vulnerability.">
+<style>
+:root{--bg:#f3f5fa;--card:#fff;--text:#14161c;--muted:#5b6275;--accent:#3d6ae5;--line:rgba(0,0,0,.1)}
+@media (prefers-color-scheme:dark){:root{--bg:#0b0d12;--card:#171a22;--text:#f3f4f8;--muted:#9096a8;--accent:#7292ff;--line:rgba(255,255,255,.1)}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+main{max-width:760px;margin:0 auto;padding:40px 20px 80px}
+.card{background:var(--card);border-radius:24px;padding:32px 28px;box-shadow:0 0 0 .5px var(--line)}
+h1{margin:0 0 4px;font-size:32px;letter-spacing:-.03em}
+h2{margin:30px 0 6px;font-size:19px}
+h3{margin:18px 0 4px;font-size:16px}
+p,li{color:var(--text)}
+.muted{color:var(--muted);font-size:14px}
+a{color:var(--accent)}
+ul{padding-left:20px}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:10px 0}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600}
+.nav{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:26px;font-size:14px}
+</style>
+</head>
+<body>
+<main>
+<p><a href="/">&larr; dbeat</a></p>
+<div class="card">
+<h1>Security</h1>
+<p class="muted">Last updated: 24 November 2026</p>
+
+<p>This page describes the protections we use today. We do not hold a security certification such as ISO 27001 or SOC 2, and we do not claim one.</p>
+
+<h2>How we protect your data</h2>
+<ul>
+<li><b>Encrypted connections.</b> The site and all traffic to our database use HTTPS (TLS). Browsers are told to use HTTPS only.</li>
+<li><b>Company separation.</b> Each company can see only its own data. This is enforced inside the database (row-level security), not just in the app, and only owners and dispatchers can change fleet data.</li>
+<li><b>Sign-in.</b> Passwords are stored only as one-way hashes by our authentication provider. Email addresses are verified. You can also sign in with Google, so we never handle a Google password. Signing up is rate limited.</li>
+<li><b>Payments.</b> Card details go straight to our payment provider and never reach us. Payment notifications to our server are checked with a cryptographic signature and rejected if they do not match.</li>
+<li><b>Secrets stay on the server.</b> Keys that can read or change data are held in the hosting provider's protected settings, never in the website code or the browser.</li>
+<li><b>Browser protections.</b> We send security headers (a content security policy, clickjacking protection, no content sniffing, and others) and check the integrity of the outside library we load.</li>
+<li><b>Input handling.</b> Text typed into the app is escaped before it is shown, and saved data is checked before it is displayed.</li>
+<li><b>Encrypted storage.</b> Our database provider encrypts stored data at rest.</li>
+<li><b>Access.</b> Access to production systems is limited to the people who need it, and our providers keep access logs.</li>
+<li><b>Sensitive data.</b> Driver ID numbers are partly hidden on screen.</li>
+<li><b>Logs.</b> Server logs are short-lived and we avoid putting personal data in them.</li>
+</ul>
+
+<h2>Reporting a vulnerability</h2>
+<p>If you find a security problem, please email <a href="mailto:ylc27shubham.saharan@mastersunion.org">ylc27shubham.saharan@mastersunion.org</a> with the details and steps to reproduce it. Please give us a reasonable time to fix it before telling anyone else.</p>
+<ul>
+<li>We will acknowledge your report within 5 business days and keep you updated.</li>
+<li>Please do not access other people's data, disrupt the service, or run automated attacks. Test only with your own account.</li>
+<li>If you follow these rules, we will not take legal action against you for good-faith research.</li>
+<li>We do not currently run a paid bug bounty, but we are happy to thank you publicly if you wish.</li>
+</ul>
+
+<h2>If something goes wrong</h2>
+<p>We follow an incident procedure: contain the problem, find what was affected, fix it, tell affected customers without undue delay, tell authorities where the law requires, and write down what we learned. See the <a href="/privacy">Privacy Policy</a> and <a href="/dpa">Data Processing Agreement</a>.</p>
+
+<h2>What you can do</h2>
+<ul>
+<li>Use a long, unique password, or sign in with Google.</li>
+<li>Give access only to people who need it, and remove people who leave.</li>
+<li>Enter only the driver details you need.</li>
+</ul>
+
+<p class="nav muted"><a href="/terms">Terms of Service</a> · <a href="/privacy">Privacy Policy</a> · <a href="/cookies">Cookie Policy</a> · <a href="/copyright">Copyright and Takedown</a> · <a href="/dpa">Data Processing Agreement</a> · <a href="/notices">Third-party notices</a></p>
+</div>
+</main>
+</body>
+</html>

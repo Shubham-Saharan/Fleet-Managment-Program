@@ -1,1 +1,6 @@
 .env*
+supabase
+docs
+.github
+README.md
+LICENSE
